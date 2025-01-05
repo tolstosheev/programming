@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Customer.h"
+#include "Product.h"
 
 using namespace System;
 using namespace System::IO;
@@ -11,17 +12,24 @@ ref class db {
 private:
 	String^ dbName;
 	List<Customer^>^ customers;
+	List<Product^>^ products;
 public:
 	static db^ data;
 
-	db(String^ _dbName) {			// Инициализация
+	db(String^ _dbName) {			
 		dbName = _dbName;
 		customers = gcnew List<Customer^>();
+		products = gcnew List<Product^>();
 	};
 
 	void addCustomer(Customer^ c) { customers->Add(c); }
 	Customer^ getCustomer(int idx) { return (idx >= 0 && idx < customers->Count) ? customers[idx] : nullptr; }
 	List<Customer^>^ getCustomerSource() { return customers; }
+
+	void addProduct(Product^ c) { products->Add(c); }
+	Product^ getProduct(int idx) { return (idx >= 0 && idx < products->Count) ? products[idx] : nullptr; }
+	List<Product^>^ getProductSource() { return products; }
+
 	void Load()
 	{
 		StreamReader^ sr;
@@ -31,8 +39,14 @@ public:
 		int cnt = Convert::ToInt32(sr->ReadLine());		
 		for (int i = 0; i < cnt; i++)
 			addCustomer(gcnew Customer(sr));
+
+		cnt = Convert::ToInt32(sr->ReadLine());
+		for (int i = 0; i < cnt; i++)
+			addProduct(gcnew Product(sr));
+
 		sr->Close();
 	}
+
 	void Save()
 	{
 		StreamWriter^ sw;
@@ -41,6 +55,10 @@ public:
 
 		sw->WriteLine(customers->Count);								
 		for each (Customer ^ p in customers) p->Save(sw);
+		
+		sw->WriteLine(products->Count);
+		for each (Product ^ p in products) p->Save(sw);
+		
 		sw->Close();
 	}
 

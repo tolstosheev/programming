@@ -65,14 +65,14 @@ namespace programming {
 
 
 
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsID;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsName;
-	private: System::Windows::Forms::DataGridViewComboBoxColumn^ ProductsCategory;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsDimensions;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsWeight;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsMaterial;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsColor;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsWarrantyPeriod;
+
+
+
+
+
+
+
+
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseID;
 	private: System::Windows::Forms::DataGridViewComboBoxColumn^ WarehouseProductName;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductQuantity;
@@ -87,6 +87,20 @@ namespace programming {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersName;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersPhone;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersAddress;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsID;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsName;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsDimensions;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsWeight;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsMaterial;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsColor;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsWarrantyPeriod;
+
+
+
+
+
+
+
 
 
 
@@ -119,19 +133,15 @@ namespace programming {
 			this->tabCustomers = (gcnew System::Windows::Forms::TabPage());
 			this->buttonCustomersDel = (gcnew System::Windows::Forms::Button());
 			this->dataCustomers = (gcnew System::Windows::Forms::DataGridView());
+			this->CustomersID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->CustomersName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->CustomersPhone = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->CustomersAddress = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->buttonCustomersAdd = (gcnew System::Windows::Forms::Button());
 			this->tabProducts = (gcnew System::Windows::Forms::TabPage());
 			this->buttonProductsDel = (gcnew System::Windows::Forms::Button());
 			this->buttonProductsAdd = (gcnew System::Windows::Forms::Button());
 			this->dataProducts = (gcnew System::Windows::Forms::DataGridView());
-			this->ProductsID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsCategory = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
-			this->ProductsDimensions = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsWeight = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsMaterial = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsColor = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->ProductsWarrantyPeriod = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabWarehouse = (gcnew System::Windows::Forms::TabPage());
 			this->buttonWarehouseDel = (gcnew System::Windows::Forms::Button());
 			this->buttonWarehouseAdd = (gcnew System::Windows::Forms::Button());
@@ -151,10 +161,13 @@ namespace programming {
 			this->OrdersDate = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->OrdersPrice = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tab = (gcnew System::Windows::Forms::TabControl());
-			this->CustomersID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->CustomersName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->CustomersPhone = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->CustomersAddress = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsDimensions = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsWeight = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsMaterial = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsColor = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->ProductsWarrantyPeriod = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabCustomers->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataCustomers))->BeginInit();
 			this->tabProducts->SuspendLayout();
@@ -205,6 +218,31 @@ namespace programming {
 			this->dataCustomers->Size = System::Drawing::Size(927, 200);
 			this->dataCustomers->TabIndex = 0;
 			// 
+			// CustomersID
+			// 
+			this->CustomersID->DataPropertyName = L"Id";
+			this->CustomersID->HeaderText = L"ID";
+			this->CustomersID->Name = L"CustomersID";
+			this->CustomersID->Resizable = System::Windows::Forms::DataGridViewTriState::True;
+			// 
+			// CustomersName
+			// 
+			this->CustomersName->DataPropertyName = L"Name";
+			this->CustomersName->HeaderText = L"Заказчик";
+			this->CustomersName->Name = L"CustomersName";
+			// 
+			// CustomersPhone
+			// 
+			this->CustomersPhone->DataPropertyName = L"Phone";
+			this->CustomersPhone->HeaderText = L"Телефон";
+			this->CustomersPhone->Name = L"CustomersPhone";
+			// 
+			// CustomersAddress
+			// 
+			this->CustomersAddress->DataPropertyName = L"Address";
+			this->CustomersAddress->HeaderText = L"Адрес";
+			this->CustomersAddress->Name = L"CustomersAddress";
+			// 
 			// buttonCustomersAdd
 			// 
 			this->buttonCustomersAdd->Location = System::Drawing::Point(276, 206);
@@ -253,56 +291,16 @@ namespace programming {
 			this->dataProducts->AllowUserToAddRows = false;
 			this->dataProducts->BackgroundColor = System::Drawing::SystemColors::ButtonFace;
 			this->dataProducts->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataProducts->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(8) {
+			this->dataProducts->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(7) {
 				this->ProductsID,
-					this->ProductsName, this->ProductsCategory, this->ProductsDimensions, this->ProductsWeight, this->ProductsMaterial, this->ProductsColor,
-					this->ProductsWarrantyPeriod
+					this->ProductsName, this->ProductsDimensions, this->ProductsWeight, this->ProductsMaterial, this->ProductsColor, this->ProductsWarrantyPeriod
 			});
 			this->dataProducts->Location = System::Drawing::Point(0, 0);
 			this->dataProducts->Name = L"dataProducts";
 			this->dataProducts->RowHeadersVisible = false;
 			this->dataProducts->Size = System::Drawing::Size(927, 197);
 			this->dataProducts->TabIndex = 0;
-			// 
-			// ProductsID
-			// 
-			this->ProductsID->HeaderText = L"ID";
-			this->ProductsID->Name = L"ProductsID";
-			// 
-			// ProductsName
-			// 
-			this->ProductsName->HeaderText = L"Название";
-			this->ProductsName->Name = L"ProductsName";
-			// 
-			// ProductsCategory
-			// 
-			this->ProductsCategory->HeaderText = L"Категория";
-			this->ProductsCategory->Name = L"ProductsCategory";
-			// 
-			// ProductsDimensions
-			// 
-			this->ProductsDimensions->HeaderText = L"Габариты";
-			this->ProductsDimensions->Name = L"ProductsDimensions";
-			// 
-			// ProductsWeight
-			// 
-			this->ProductsWeight->HeaderText = L"Вес";
-			this->ProductsWeight->Name = L"ProductsWeight";
-			// 
-			// ProductsMaterial
-			// 
-			this->ProductsMaterial->HeaderText = L"Материал";
-			this->ProductsMaterial->Name = L"ProductsMaterial";
-			// 
-			// ProductsColor
-			// 
-			this->ProductsColor->HeaderText = L"Цвет";
-			this->ProductsColor->Name = L"ProductsColor";
-			// 
-			// ProductsWarrantyPeriod
-			// 
-			this->ProductsWarrantyPeriod->HeaderText = L"Гарантийный срок (мес)";
-			this->ProductsWarrantyPeriod->Name = L"ProductsWarrantyPeriod";
+			this->dataProducts->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MyForm::dataProducts_CellContentClick);
 			// 
 			// tabWarehouse
 			// 
@@ -465,30 +463,47 @@ namespace programming {
 			this->tab->Size = System::Drawing::Size(935, 260);
 			this->tab->TabIndex = 0;
 			// 
-			// CustomersID
+			// ProductsID
 			// 
-			this->CustomersID->DataPropertyName = L"Id";
-			this->CustomersID->HeaderText = L"ID";
-			this->CustomersID->Name = L"CustomersID";
-			this->CustomersID->Resizable = System::Windows::Forms::DataGridViewTriState::True;
+			this->ProductsID->HeaderText = L"ID";
+			this->ProductsID->Name = L"ProductsID";
+			this->ProductsID->DataPropertyName = L"ID";
 			// 
-			// CustomersName
+			// ProductsName
 			// 
-			this->CustomersName->DataPropertyName = L"Name";
-			this->CustomersName->HeaderText = L"Заказчик";
-			this->CustomersName->Name = L"CustomersName";
+			this->ProductsName->HeaderText = L"Название";
+			this->ProductsName->Name = L"ProductsName";
+			this->ProductsName->DataPropertyName = L"Name";
 			// 
-			// CustomersPhone
+			// ProductsDimensions
 			// 
-			this->CustomersPhone->DataPropertyName = L"Phone";
-			this->CustomersPhone->HeaderText = L"Телефон";
-			this->CustomersPhone->Name = L"CustomersPhone";
+			this->ProductsDimensions->HeaderText = L"Габариты";
+			this->ProductsDimensions->Name = L"ProductsDimensions";
+			this->ProductsDimensions->DataPropertyName = L"Dimensions";
 			// 
-			// CustomersAddress
+			// ProductsWeight
 			// 
-			this->CustomersAddress->DataPropertyName = L"Address";
-			this->CustomersAddress->HeaderText = L"Адрес";
-			this->CustomersAddress->Name = L"CustomersAddress";
+			this->ProductsWeight->HeaderText = L"Вес (кг)";
+			this->ProductsWeight->Name = L"ProductsWeight";
+			this->ProductsWeight->DataPropertyName = L"Weight";
+			// 
+			// ProductsMaterial
+			// 
+			this->ProductsMaterial->HeaderText = L"Материал";
+			this->ProductsMaterial->Name = L"ProductsMaterial";
+			this->ProductsMaterial->DataPropertyName = L"Material";
+			// 
+			// ProductsColor
+			// 
+			this->ProductsColor->HeaderText = L"Цвет";
+			this->ProductsColor->Name = L"ProductsColor";
+			this->ProductsColor->DataPropertyName = L"Color";
+			// 
+			// ProductsWarrantyPeriod
+			// 
+			this->ProductsWarrantyPeriod->HeaderText = L"Гарантийный срок (мес)";
+			this->ProductsWarrantyPeriod->Name = L"ProductsWarrantyPeriod";
+			this->ProductsWarrantyPeriod->DataPropertyName = L"WarrantyPeriod";
 			// 
 			// MyForm
 			// 
@@ -521,121 +536,136 @@ namespace programming {
 
 		dataCustomers->AutoGenerateColumns = false;
 		dataCustomers->DataSource = db::data->getCustomerSource();
+
+		dataProducts->AutoGenerateColumns = false;
+		dataProducts->DataSource = db::data->getProductSource();
 	}
 
 	private: System::Void DataGridView_CellValidating(System::Object^ sender, System::Windows::Forms::DataGridViewCellValidatingEventArgs^ e) {
 		DataGridView^ dataGridView = (DataGridView^)sender;
 
 		try {
-			// Универсальная проверка типов данных
 			DataGridViewCell^ cell = dataGridView->Rows[e->RowIndex]->Cells[e->ColumnIndex];
 			String^ newValue = e->FormattedValue->ToString();
 
-			// Проверка на пустые значения для всех столбцов
-			if (newValue->Length == 0) {
+			if (String::IsNullOrEmpty(newValue)) {
 				throw gcnew Exception("Поле не может быть пустым");
 			}
 
-			// Проверка типов данных
 			if (cell->ValueType->ToString() == "System.Int32") {
-				Int32 x = Convert::ToInt32(newValue); // Проверка на целое число
+				Int32 x = Convert::ToInt32(newValue);
 				if (x < 0) {
 					throw gcnew Exception("Значение не может быть отрицательным");
 				}
 			}
 			else if (cell->ValueType->ToString() == "System.Decimal") {
-				Decimal x = Convert::ToDecimal(newValue); // Проверка на вещественное число
+				Decimal x = Convert::ToDecimal(newValue);
 				if (x < 0) {
 					throw gcnew Exception("Значение не может быть отрицательным");
 				}
 			}
 			else if (cell->ValueType->ToString() == "System.DateTime") {
-				DateTime x = Convert::ToDateTime(newValue); // Проверка на дату
+				DateTime x = Convert::ToDateTime(newValue);
 				if (x > DateTime::Now) {
 					throw gcnew Exception("Дата не может быть в будущем");
 				}
 			}
 
-			// Специфические проверки для каждой таблицы
-			if (dataGridView == this->dataCustomers) {
-				String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
+			String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
 
+			if (dataGridView == this->dataCustomers) {
 				if (columnName == "CustomersPhone") {
-					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, "^[0-9]+$")) {
-						throw gcnew Exception("Телефон должен содержать только цифры");
+					String^ phonePattern =
+						"^(\\+\\d{1,3}[-\\s]?)?(\\(\\d{3}\\)|\\d{3})[-\\s]?\\d{3}[-\\s]?\\d{2}[-\\s]?\\d{2}$";
+					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, phonePattern)) {
+						throw gcnew Exception(
+							"Телефон должен быть в одном из форматов:\n"
+							"+X-XXX-XXX-XX-XX, +X (XXX) XXX-XX-XX, XXX-XXX-XX-XX, (XXX) XXX-XX-XX, XXXXXXXXXXX"
+						);
+					}
+				}
+				else if (columnName == "CustomersAddress") {
+					String^ addressPattern =
+						"^[A-Za-zА-Яа-я0-9\\s\\-\\.]+,\\s*\\d+[A-Za-zА-Яа-я]?,\\s*[A-Za-zА-Яа-я\\s\\-\\.]+,[A-Za-z0-9\\s\\-]{3,10},\\s*[A-Za-zА-Яа-я\\s\\-\\.]+$";
+					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, addressPattern)) {
+						throw gcnew Exception(
+							"Адрес должен быть в формате:\n"
+							"Улица, Номер дома, Город, Индекс, Страна\n"
+							"Пример: ул. Ленина, 12А, Москва, 123456, Россия"
+						);
 					}
 				}
 			}
 			else if (dataGridView == this->dataProducts) {
-				String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
-
 				if (columnName == "ProductsWeight") {
 					Decimal weight = Convert::ToDecimal(newValue);
 					if (weight <= 0) {
 						throw gcnew Exception("Вес изделия должен быть положительным числом");
 					}
 				}
-			}
-			else if (dataGridView == this->dataWarehouse) {
-				String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
+				else if (columnName == "ProductsDimensions") {
+					String^ dimensionsPattern = "^\\d+(\\s*[x,]\\s*|\\s+)\\d+(\\s*[x,]\\s*|\\s+)\\d+$";
+					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, dimensionsPattern)) {
+						throw gcnew Exception(
+							"Габариты должны быть в формате: 'Длина x Ширина x Высота' или 'Длина Ширина Высота'\n"
+							"Пример: 120x60x80 или 120 60 80"
+						);
+					}
 
-				if (columnName == "WarehouseProductQuantity") {
-					Int32 quantity = Convert::ToInt32(newValue);
-					if (quantity < 0) {
-						throw gcnew Exception("Количество изделий не может быть отрицательным");
+					array<Char>^ separators = { 'x', ',', ' ' };
+					array<String^>^ dimensions = newValue->Split(separators, StringSplitOptions::RemoveEmptyEntries);
+
+					if (dimensions->Length != 3) {
+						throw gcnew Exception("Габариты должны состоять из трех чисел.");
+					}
+
+					Decimal length = Convert::ToDecimal(dimensions[0]);
+					Decimal width = Convert::ToDecimal(dimensions[1]);
+					Decimal height = Convert::ToDecimal(dimensions[2]);
+
+					if (length <= 0 || width <= 0 || height <= 0) {
+						throw gcnew Exception("Габариты должны быть положительными числами.");
 					}
 				}
 			}
-			else if (dataGridView == this->dataOrders) {
-				String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
-
-				if (columnName == "OrdersCount") {
-					Int32 count = Convert::ToInt32(newValue);
-					if (count <= 0) {
-						throw gcnew Exception("Количество заказов должно быть положительным числом");
-					}
+			else if (dataGridView == this->dataWarehouse && columnName == "WarehouseProductQuantity") {
+				Int32 quantity = Convert::ToInt32(newValue);
+				if (quantity < 0) {
+					throw gcnew Exception("Количество изделий не может быть отрицательным");
+				}
+			}
+			else if (dataGridView == this->dataOrders && columnName == "OrdersCount") {
+				Int32 count = Convert::ToInt32(newValue);
+				if (count <= 0) {
+					throw gcnew Exception("Количество заказов должно быть положительным числом");
 				}
 			}
 
-			// Если все проверки пройдены, сохраняем данные
 			db::data->Save();
 		}
 		catch (FormatException^) {
 			MessageBox::Show("Неверный формат данных", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			e->Cancel = true; // Отменяем изменение
+			e->Cancel = true;
 		}
 		catch (Exception^ ex) {
 			MessageBox::Show(ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			e->Cancel = true; // Отменяем изменение
+			e->Cancel = true;
 		}
 	}
-		private: System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-			Customer^ newCustomer = gcnew Customer("Новый заказчик", "8960987513", "ул Ленина");
-			db::data->addCustomer(newCustomer);
-			dataCustomers->DataSource = nullptr;
-			dataCustomers->DataSource = db::data->getCustomerSource();
-			db::data->Save();
-		}
-	private: System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+	void DeleteRow(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
 		try {
-			if (dataCustomers->SelectedCells->Count == 0) {
+			if (dataGridView->SelectedCells->Count == 0) {
 				MessageBox::Show("Не выбрана ни одна строка для удаления.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 				return;
 			}
-
-			int selectedRowIndex = dataCustomers->SelectedCells[0]->RowIndex;
-
-
-			if (selectedRowIndex < 0 || selectedRowIndex >= db::data->getCustomerSource()->Count) {
+			int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
+			if (selectedRowIndex < 0 || selectedRowIndex >= dataSource->Count) {
 				MessageBox::Show("Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 				return;
 			}
-			db::data->getCustomerSource()->RemoveAt(selectedRowIndex);
-
-			dataCustomers->DataSource = nullptr;
-			dataCustomers->DataSource = db::data->getCustomerSource();
-
-
+			dataSource->RemoveAt(selectedRowIndex);
+			dataGridView->DataSource = nullptr;
+			dataGridView->DataSource = dataSource;
 			db::data->Save();
 		}
 		catch (ArgumentOutOfRangeException^ ex) {
@@ -645,11 +675,27 @@ namespace programming {
 			MessageBox::Show("Ошибка при удалении строки: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
 	}
-	private: System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
 
+	private: System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		Customer^ newCustomer = gcnew Customer("Новый заказчик", "+7-999-999-99-99", "ул. Ленина, 12А, Москва, 123456, Россия");
+		db::data->addCustomer(newCustomer);
+		dataCustomers->DataSource = nullptr;
+		dataCustomers->DataSource = db::data->getCustomerSource();
+		db::data->Save();
+	}
+
+	private: System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataCustomers, db::data->getCustomerSource());
+	}
+	private: System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		Product^ newProduct = gcnew Product("Новый продукт", "12 12 12", 23, "Дерево", "Коричневый", 12);
+		db::data->addProduct(newProduct);
+		dataProducts->DataSource = nullptr;
+		dataProducts->DataSource = db::data->getProductSource();
+		db::data->Save();
 	}
 	private: System::Void buttonProductsDel_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		DeleteRow(dataProducts, db::data->getProductSource());
 	}
 	private: System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
 
@@ -665,5 +711,7 @@ namespace programming {
 	}
 
 
+private: System::Void dataProducts_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
+}
 };
 }
