@@ -32,7 +32,7 @@ public:
         price = Convert::ToDecimal(sr->ReadLine());
     }
 
-    property Int32 Id {
+    property Int32 ID {
         Int32 get() { return id; }
     }
 

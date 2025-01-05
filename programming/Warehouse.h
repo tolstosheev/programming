@@ -29,7 +29,7 @@ private:
         else {
             price = 0;
         }
-        OnPropertyChanged("Price"); // Уведомляем об изменении цены
+        OnPropertyChanged("Price"); 
     }
 
     void UpdateStatus() {
@@ -39,7 +39,7 @@ private:
         else {
             status = "Нет в наличии";
         }
-        OnPropertyChanged("Status"); // Уведомляем об изменении статуса
+        OnPropertyChanged("Status"); 
     }
 
 public:
@@ -47,8 +47,8 @@ public:
 
     Warehouse(Int32 product, Int32 quantity, String^ status)
         : id(GenerateRandomId()), product(product), quantity(quantity), status(status) {
-        CalculatePrice(); // Пересчитываем цену при создании объекта
-        UpdateStatus(); // Обновляем статус при создании объекта
+        CalculatePrice(); 
+        UpdateStatus(); 
     }
 
     Warehouse(StreamReader^ sr) {
@@ -59,7 +59,7 @@ public:
         price = Convert::ToDecimal(sr->ReadLine());
     }
 
-    property Int32 Id {
+    property Int32 ID {
         Int32 get() { return id; }
     }
 
@@ -67,7 +67,7 @@ public:
         Product^ get() { return data->getProduct(product); }
         void set(Product^ value) {
             product = (data != nullptr) ? data->getProductObject(value) : 0;
-            CalculatePrice(); // Пересчитываем цену при изменении продукта
+            CalculatePrice();
             OnPropertyChanged("ProductObject");
         }
     }
@@ -76,8 +76,8 @@ public:
         Int32 get() { return quantity; }
         void set(Int32 value) {
             quantity = value;
-            CalculatePrice(); // Пересчитываем цену при изменении количества
-            UpdateStatus(); // Обновляем статус при изменении количества
+            CalculatePrice(); 
+            UpdateStatus(); 
             OnPropertyChanged("Quantity");
         }
     }

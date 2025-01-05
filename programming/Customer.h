@@ -25,7 +25,7 @@ public:
         address = sr->ReadLine();
     }
 
-    property Int32 Id {
+    property Int32 ID {
         Int32 get() { return id; }
     }
 
@@ -43,7 +43,6 @@ public:
         String^ get() { return address; }
         void set(String^ value) { address = value; }
     }
-
 
     property Customer^ thisCustomer { 
         Customer^ get() { return this; }; 
