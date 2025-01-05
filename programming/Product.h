@@ -10,7 +10,7 @@ private:
     String^ material;
     String^ color;
     Int32 warrantyPeriod;
-
+    Decimal price;
 
     Int32 GenerateRandomId() {
         Random^ random = gcnew Random();
@@ -18,8 +18,8 @@ private:
     }
 public:
 
-    Product(String^ name, String^ dimensions, Decimal weight, String^ material, String^ color, Int32 warrantyPeriod)
-        : id(GenerateRandomId()), name(name), dimensions(dimensions), weight(weight), material(material), color(color), warrantyPeriod(warrantyPeriod){}
+    Product(String^ name, String^ dimensions, Decimal weight, String^ material, String^ color, Int32 warrantyPeriod, Decimal price)
+        : id(GenerateRandomId()), name(name), dimensions(dimensions), weight(weight), material(material), color(color), warrantyPeriod(warrantyPeriod), price(price){}
 
     Product(StreamReader^ sr) {
         id = Convert::ToInt32(sr->ReadLine());
@@ -29,6 +29,7 @@ public:
         material = sr->ReadLine();
         color = sr->ReadLine();
         warrantyPeriod = Convert::ToInt32(sr->ReadLine());
+        price = Convert::ToDecimal(sr->ReadLine());
     }
 
     property Int32 Id {
@@ -48,6 +49,11 @@ public:
     property Decimal Weight {
         Decimal get() { return weight; }
         void set(Decimal value) { weight = value; }
+    }
+
+    property Decimal Price {
+        Decimal get() { return price; }
+        void set(Decimal value) { price = value; }
     }
 
     property String^ Material {
@@ -79,6 +85,6 @@ public:
         sw->WriteLine(material);
         sw->WriteLine(color);
         sw->WriteLine(warrantyPeriod);
-
+        sw->WriteLine(price);
     }
 };
