@@ -8,6 +8,7 @@ private:
 	String^ phone;;
 	String^ address;
 
+
 	Int32 GenerateRandomId() {
 		Random^ random = gcnew Random();
 		return random->Next(1000, 10000); 
@@ -43,7 +44,10 @@ public:
         void set(String^ value) { address = value; }
     }
 
- 
+
+    property Customer^ thisCustomer { 
+        Customer^ get() { return this; }; 
+    }
 
     bool Equals(Customer^ p) { return p == this; }
 

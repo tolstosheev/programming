@@ -61,32 +61,6 @@ namespace programming {
 	private: System::Windows::Forms::Button^ buttonProductsDel;
 	private: System::Windows::Forms::Button^ buttonProductsAdd;
 
-
-
-
-
-
-
-
-
-
-
-
-
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseID;
-	private: System::Windows::Forms::DataGridViewComboBoxColumn^ WarehouseProductName;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductQuantity;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductStatus;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersID;
-	private: System::Windows::Forms::DataGridViewComboBoxColumn^ OrdersCustomer;
-	private: System::Windows::Forms::DataGridViewComboBoxColumn^ OrdersProduct;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersCount;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersDate;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersPrice;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersID;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersName;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersPhone;
-	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersAddress;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsID;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsName;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsDimensions;
@@ -94,28 +68,22 @@ namespace programming {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsMaterial;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsColor;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ ProductsWarrantyPeriod;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersID;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersName;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersPhone;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersAddress;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ TypeCustomer;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ TypeProduct;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseID;
+	private: System::Windows::Forms::DataGridViewComboBoxColumn^ WarehouseProductID;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductQuantity;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductStatus;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersID;
+	private: System::Windows::Forms::DataGridViewComboBoxColumn^ OrdersCustomerID;
+	private: System::Windows::Forms::DataGridViewComboBoxColumn^ OrdersProductID;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersCount;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersDate;
+	private: System::Windows::Forms::DataGridViewTextBoxColumn^ OrdersPrice;
 
 	private:
 		/// <summary>
@@ -137,30 +105,12 @@ namespace programming {
 			this->CustomersName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->CustomersPhone = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->CustomersAddress = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->TypeCustomer = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->buttonCustomersAdd = (gcnew System::Windows::Forms::Button());
 			this->tabProducts = (gcnew System::Windows::Forms::TabPage());
 			this->buttonProductsDel = (gcnew System::Windows::Forms::Button());
 			this->buttonProductsAdd = (gcnew System::Windows::Forms::Button());
 			this->dataProducts = (gcnew System::Windows::Forms::DataGridView());
-			this->tabWarehouse = (gcnew System::Windows::Forms::TabPage());
-			this->buttonWarehouseDel = (gcnew System::Windows::Forms::Button());
-			this->buttonWarehouseAdd = (gcnew System::Windows::Forms::Button());
-			this->dataWarehouse = (gcnew System::Windows::Forms::DataGridView());
-			this->WarehouseID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->WarehouseProductName = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
-			this->WarehouseProductQuantity = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->WarehouseProductStatus = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->tabOrder = (gcnew System::Windows::Forms::TabPage());
-			this->buttonOrdersDel = (gcnew System::Windows::Forms::Button());
-			this->buttonOrdersAdd = (gcnew System::Windows::Forms::Button());
-			this->dataOrders = (gcnew System::Windows::Forms::DataGridView());
-			this->OrdersID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->OrdersCustomer = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
-			this->OrdersProduct = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
-			this->OrdersCount = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->OrdersDate = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->OrdersPrice = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->tab = (gcnew System::Windows::Forms::TabControl());
 			this->ProductsID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->ProductsName = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->ProductsDimensions = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
@@ -168,6 +118,26 @@ namespace programming {
 			this->ProductsMaterial = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->ProductsColor = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->ProductsWarrantyPeriod = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->TypeProduct = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->tabWarehouse = (gcnew System::Windows::Forms::TabPage());
+			this->buttonWarehouseDel = (gcnew System::Windows::Forms::Button());
+			this->buttonWarehouseAdd = (gcnew System::Windows::Forms::Button());
+			this->dataWarehouse = (gcnew System::Windows::Forms::DataGridView());
+			this->tabOrder = (gcnew System::Windows::Forms::TabPage());
+			this->buttonOrdersDel = (gcnew System::Windows::Forms::Button());
+			this->buttonOrdersAdd = (gcnew System::Windows::Forms::Button());
+			this->dataOrders = (gcnew System::Windows::Forms::DataGridView());
+			this->tab = (gcnew System::Windows::Forms::TabControl());
+			this->WarehouseID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->WarehouseProductID = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
+			this->WarehouseProductQuantity = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->WarehouseProductStatus = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->OrdersID = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->OrdersCustomerID = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
+			this->OrdersProductID = (gcnew System::Windows::Forms::DataGridViewComboBoxColumn());
+			this->OrdersCount = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->OrdersDate = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->OrdersPrice = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->tabCustomers->SuspendLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->dataCustomers))->BeginInit();
 			this->tabProducts->SuspendLayout();
@@ -207,9 +177,9 @@ namespace programming {
 			this->dataCustomers->AllowUserToAddRows = false;
 			this->dataCustomers->BackgroundColor = System::Drawing::SystemColors::ButtonFace;
 			this->dataCustomers->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataCustomers->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(4) {
+			this->dataCustomers->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
 				this->CustomersID,
-					this->CustomersName, this->CustomersPhone, this->CustomersAddress
+					this->CustomersName, this->CustomersPhone, this->CustomersAddress, this->TypeCustomer
 			});
 			this->dataCustomers->GridColor = System::Drawing::SystemColors::AppWorkspace;
 			this->dataCustomers->Location = System::Drawing::Point(0, 0);
@@ -242,6 +212,11 @@ namespace programming {
 			this->CustomersAddress->DataPropertyName = L"Address";
 			this->CustomersAddress->HeaderText = L"Адрес";
 			this->CustomersAddress->Name = L"CustomersAddress";
+			// 
+			// TypeCustomer
+			// 
+			this->TypeCustomer->HeaderText = L"Тип";
+			this->TypeCustomer->Name = L"TypeCustomer";
 			// 
 			// buttonCustomersAdd
 			// 
@@ -291,16 +266,63 @@ namespace programming {
 			this->dataProducts->AllowUserToAddRows = false;
 			this->dataProducts->BackgroundColor = System::Drawing::SystemColors::ButtonFace;
 			this->dataProducts->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->dataProducts->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(7) {
+			this->dataProducts->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(8) {
 				this->ProductsID,
-					this->ProductsName, this->ProductsDimensions, this->ProductsWeight, this->ProductsMaterial, this->ProductsColor, this->ProductsWarrantyPeriod
+					this->ProductsName, this->ProductsDimensions, this->ProductsWeight, this->ProductsMaterial, this->ProductsColor, this->ProductsWarrantyPeriod,
+					this->TypeProduct
 			});
 			this->dataProducts->Location = System::Drawing::Point(0, 0);
 			this->dataProducts->Name = L"dataProducts";
 			this->dataProducts->RowHeadersVisible = false;
 			this->dataProducts->Size = System::Drawing::Size(927, 197);
 			this->dataProducts->TabIndex = 0;
-			this->dataProducts->CellContentClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &MyForm::dataProducts_CellContentClick);
+			// 
+			// ProductsID
+			// 
+			this->ProductsID->DataPropertyName = L"ID";
+			this->ProductsID->HeaderText = L"ID";
+			this->ProductsID->Name = L"ProductsID";
+			// 
+			// ProductsName
+			// 
+			this->ProductsName->DataPropertyName = L"Name";
+			this->ProductsName->HeaderText = L"Название";
+			this->ProductsName->Name = L"ProductsName";
+			// 
+			// ProductsDimensions
+			// 
+			this->ProductsDimensions->DataPropertyName = L"Dimensions";
+			this->ProductsDimensions->HeaderText = L"Габариты";
+			this->ProductsDimensions->Name = L"ProductsDimensions";
+			// 
+			// ProductsWeight
+			// 
+			this->ProductsWeight->DataPropertyName = L"Weight";
+			this->ProductsWeight->HeaderText = L"Вес (кг)";
+			this->ProductsWeight->Name = L"ProductsWeight";
+			// 
+			// ProductsMaterial
+			// 
+			this->ProductsMaterial->DataPropertyName = L"Material";
+			this->ProductsMaterial->HeaderText = L"Материал";
+			this->ProductsMaterial->Name = L"ProductsMaterial";
+			// 
+			// ProductsColor
+			// 
+			this->ProductsColor->DataPropertyName = L"Color";
+			this->ProductsColor->HeaderText = L"Цвет";
+			this->ProductsColor->Name = L"ProductsColor";
+			// 
+			// ProductsWarrantyPeriod
+			// 
+			this->ProductsWarrantyPeriod->DataPropertyName = L"WarrantyPeriod";
+			this->ProductsWarrantyPeriod->HeaderText = L"Гарантийный срок (мес)";
+			this->ProductsWarrantyPeriod->Name = L"ProductsWarrantyPeriod";
+			// 
+			// TypeProduct
+			// 
+			this->TypeProduct->HeaderText = L"Тип";
+			this->TypeProduct->Name = L"TypeProduct";
 			// 
 			// tabWarehouse
 			// 
@@ -342,7 +364,7 @@ namespace programming {
 			this->dataWarehouse->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
 			this->dataWarehouse->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(4) {
 				this->WarehouseID,
-					this->WarehouseProductName, this->WarehouseProductQuantity, this->WarehouseProductStatus
+					this->WarehouseProductID, this->WarehouseProductQuantity, this->WarehouseProductStatus
 			});
 			this->dataWarehouse->GridColor = System::Drawing::SystemColors::AppWorkspace;
 			this->dataWarehouse->Location = System::Drawing::Point(0, 0);
@@ -350,26 +372,6 @@ namespace programming {
 			this->dataWarehouse->RowHeadersVisible = false;
 			this->dataWarehouse->Size = System::Drawing::Size(927, 189);
 			this->dataWarehouse->TabIndex = 0;
-			// 
-			// WarehouseID
-			// 
-			this->WarehouseID->HeaderText = L"ID";
-			this->WarehouseID->Name = L"WarehouseID";
-			// 
-			// WarehouseProductName
-			// 
-			this->WarehouseProductName->HeaderText = L"Название изделия";
-			this->WarehouseProductName->Name = L"WarehouseProductName";
-			// 
-			// WarehouseProductQuantity
-			// 
-			this->WarehouseProductQuantity->HeaderText = L"Количество изделий";
-			this->WarehouseProductQuantity->Name = L"WarehouseProductQuantity";
-			// 
-			// WarehouseProductStatus
-			// 
-			this->WarehouseProductStatus->HeaderText = L"Статус";
-			this->WarehouseProductStatus->Name = L"WarehouseProductStatus";
 			// 
 			// tabOrder
 			// 
@@ -411,7 +413,7 @@ namespace programming {
 			this->dataOrders->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
 			this->dataOrders->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(6) {
 				this->OrdersID,
-					this->OrdersCustomer, this->OrdersProduct, this->OrdersCount, this->OrdersDate, this->OrdersPrice
+					this->OrdersCustomerID, this->OrdersProductID, this->OrdersCount, this->OrdersDate, this->OrdersPrice
 			});
 			this->dataOrders->Location = System::Drawing::Point(0, 0);
 			this->dataOrders->Name = L"dataOrders";
@@ -419,22 +421,58 @@ namespace programming {
 			this->dataOrders->Size = System::Drawing::Size(927, 191);
 			this->dataOrders->TabIndex = 0;
 			// 
+			// tab
+			// 
+			this->tab->Controls->Add(this->tabOrder);
+			this->tab->Controls->Add(this->tabWarehouse);
+			this->tab->Controls->Add(this->tabProducts);
+			this->tab->Controls->Add(this->tabCustomers);
+			this->tab->Location = System::Drawing::Point(0, 0);
+			this->tab->Name = L"tab";
+			this->tab->SelectedIndex = 0;
+			this->tab->Size = System::Drawing::Size(935, 260);
+			this->tab->TabIndex = 0;
+			// 
+			// WarehouseID
+			// 
+			this->WarehouseID->DataPropertyName = L"ID";
+			this->WarehouseID->HeaderText = L"ID";
+			this->WarehouseID->Name = L"WarehouseID";
+			// 
+			// WarehouseProductID
+			// 
+			this->WarehouseProductID->DataPropertyName = L"ProductObject";
+			this->WarehouseProductID->HeaderText = L"ID изделия";
+			this->WarehouseProductID->Name = L"WarehouseProductID";
+			// 
+			// WarehouseProductQuantity
+			// 
+			this->WarehouseProductQuantity->DataPropertyName = L"Quantity";
+			this->WarehouseProductQuantity->HeaderText = L"Количество изделий";
+			this->WarehouseProductQuantity->Name = L"WarehouseProductQuantity";
+			// 
+			// WarehouseProductStatus
+			// 
+			this->WarehouseProductStatus->DataPropertyName = L"Status";
+			this->WarehouseProductStatus->HeaderText = L"Статус";
+			this->WarehouseProductStatus->Name = L"WarehouseProductStatus";
+			// 
 			// OrdersID
 			// 
 			this->OrdersID->HeaderText = L"ID";
 			this->OrdersID->Name = L"OrdersID";
 			// 
-			// OrdersCustomer
+			// OrdersCustomerID
 			// 
-			this->OrdersCustomer->HeaderText = L"Заказчик";
-			this->OrdersCustomer->Name = L"OrdersCustomer";
+			this->OrdersCustomerID->HeaderText = L"ID Заказчика";
+			this->OrdersCustomerID->Name = L"OrdersCustomerID";
 			// 
-			// OrdersProduct
+			// OrdersProductID
 			// 
-			this->OrdersProduct->HeaderText = L"Изделие";
-			this->OrdersProduct->Name = L"OrdersProduct";
-			this->OrdersProduct->Resizable = System::Windows::Forms::DataGridViewTriState::True;
-			this->OrdersProduct->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::Automatic;
+			this->OrdersProductID->HeaderText = L"ID Изделия";
+			this->OrdersProductID->Name = L"OrdersProductID";
+			this->OrdersProductID->Resizable = System::Windows::Forms::DataGridViewTriState::True;
+			this->OrdersProductID->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::Automatic;
 			// 
 			// OrdersCount
 			// 
@@ -450,60 +488,6 @@ namespace programming {
 			// 
 			this->OrdersPrice->HeaderText = L"Стоимость";
 			this->OrdersPrice->Name = L"OrdersPrice";
-			// 
-			// tab
-			// 
-			this->tab->Controls->Add(this->tabOrder);
-			this->tab->Controls->Add(this->tabWarehouse);
-			this->tab->Controls->Add(this->tabProducts);
-			this->tab->Controls->Add(this->tabCustomers);
-			this->tab->Location = System::Drawing::Point(0, 0);
-			this->tab->Name = L"tab";
-			this->tab->SelectedIndex = 0;
-			this->tab->Size = System::Drawing::Size(935, 260);
-			this->tab->TabIndex = 0;
-			// 
-			// ProductsID
-			// 
-			this->ProductsID->HeaderText = L"ID";
-			this->ProductsID->Name = L"ProductsID";
-			this->ProductsID->DataPropertyName = L"ID";
-			// 
-			// ProductsName
-			// 
-			this->ProductsName->HeaderText = L"Название";
-			this->ProductsName->Name = L"ProductsName";
-			this->ProductsName->DataPropertyName = L"Name";
-			// 
-			// ProductsDimensions
-			// 
-			this->ProductsDimensions->HeaderText = L"Габариты";
-			this->ProductsDimensions->Name = L"ProductsDimensions";
-			this->ProductsDimensions->DataPropertyName = L"Dimensions";
-			// 
-			// ProductsWeight
-			// 
-			this->ProductsWeight->HeaderText = L"Вес (кг)";
-			this->ProductsWeight->Name = L"ProductsWeight";
-			this->ProductsWeight->DataPropertyName = L"Weight";
-			// 
-			// ProductsMaterial
-			// 
-			this->ProductsMaterial->HeaderText = L"Материал";
-			this->ProductsMaterial->Name = L"ProductsMaterial";
-			this->ProductsMaterial->DataPropertyName = L"Material";
-			// 
-			// ProductsColor
-			// 
-			this->ProductsColor->HeaderText = L"Цвет";
-			this->ProductsColor->Name = L"ProductsColor";
-			this->ProductsColor->DataPropertyName = L"Color";
-			// 
-			// ProductsWarrantyPeriod
-			// 
-			this->ProductsWarrantyPeriod->HeaderText = L"Гарантийный срок (мес)";
-			this->ProductsWarrantyPeriod->Name = L"ProductsWarrantyPeriod";
-			this->ProductsWarrantyPeriod->DataPropertyName = L"WarrantyPeriod";
 			// 
 			// MyForm
 			// 
@@ -539,6 +523,16 @@ namespace programming {
 
 		dataProducts->AutoGenerateColumns = false;
 		dataProducts->DataSource = db::data->getProductSource();
+
+		dataWarehouse->AutoGenerateColumns = false;
+		dataWarehouse->DataSource = db::data->getWarehouseSource();
+		WarehouseProductID->DataSource = db::data->getProductSource();
+		WarehouseProductID->ValueMember = "thisProduct";
+		WarehouseProductID->DisplayMember = "ID";
+
+		dataOrders->AutoGenerateColumns = false;
+
+
 	}
 
 	private: System::Void DataGridView_CellValidating(System::Object^ sender, System::Windows::Forms::DataGridViewCellValidatingEventArgs^ e) {
@@ -698,10 +692,20 @@ namespace programming {
 		DeleteRow(dataProducts, db::data->getProductSource());
 	}
 	private: System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-
+		if (db::data->getProductSource()->Count < 1)
+		{
+			MessageBox::Show("Заполните список изделий");
+			return;
+		}
+		Warehouse^ newWarehouse = gcnew Warehouse(0, 32, "В наличии");
+		db::data->addWarehouse(newWarehouse);
+		dataWarehouse->DataSource = nullptr;
+		dataWarehouse->DataSource = db::data->getWarehouseSource();
+		db::data->Save();
 	}
-	private: System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
 
+	private: System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataWarehouse, db::data->getWarehouseSource());
 	}
 	private: System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
 
@@ -710,8 +714,5 @@ namespace programming {
 
 	}
 
-
-private: System::Void dataProducts_CellContentClick(System::Object^ sender, System::Windows::Forms::DataGridViewCellEventArgs^ e) {
-}
 };
 }

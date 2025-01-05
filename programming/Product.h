@@ -11,6 +11,7 @@ private:
     String^ color;
     Int32 warrantyPeriod;
 
+
     Int32 GenerateRandomId() {
         Random^ random = gcnew Random();
         return random->Next(1000, 10000);
@@ -62,6 +63,10 @@ public:
     property Int32 WarrantyPeriod {
         Int32 get() { return warrantyPeriod; }
         void set(Int32 value) { warrantyPeriod = value; }
+    }
+
+    property Product^ thisProduct { 
+        Product^ get() { return this; } 
     }
 
     bool Equals(Product^ p) { return p == this; }

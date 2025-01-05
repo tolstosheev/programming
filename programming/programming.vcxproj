@@ -126,10 +126,12 @@
     <ClInclude Include="Customer.h" />
     <ClInclude Include="db.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="IWarehouse.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Product.h" />
+    <ClInclude Include="Warehouse.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
