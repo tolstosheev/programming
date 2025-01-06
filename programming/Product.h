@@ -11,6 +11,7 @@ private:
     String^ color;
     Int32 warrantyPeriod;
     Decimal price;
+    String^ type;
 
     Int32 GenerateRandomId() {
         Random^ random = gcnew Random();
@@ -18,8 +19,8 @@ private:
     }
 public:
 
-    Product(String^ name, String^ dimensions, Decimal weight, String^ material, String^ color, Int32 warrantyPeriod, Decimal price)
-        : id(GenerateRandomId()), name(name), dimensions(dimensions), weight(weight), material(material), color(color), warrantyPeriod(warrantyPeriod), price(price){}
+    Product(String^ name, String^ dimensions, Decimal weight, String^ material, String^ color, Int32 warrantyPeriod, Decimal price, String^ type)
+        : id(GenerateRandomId()), name(name), dimensions(dimensions), weight(weight), material(material), color(color), warrantyPeriod(warrantyPeriod), price(price), type(type){}
 
     Product(StreamReader^ sr) {
         id = Convert::ToInt32(sr->ReadLine());
@@ -30,6 +31,7 @@ public:
         color = sr->ReadLine();
         warrantyPeriod = Convert::ToInt32(sr->ReadLine());
         price = Convert::ToDecimal(sr->ReadLine());
+        type = sr->ReadLine();
     }
 
     property Int32 ID {
@@ -71,6 +73,11 @@ public:
         void set(Int32 value) { warrantyPeriod = value; }
     }
 
+    property String^ Type {
+        String^ get() { return type; }
+        void set(String^ value) { type = value; }
+    }
+
     property Product^ thisProduct { 
         Product^ get() { return this; } 
     }
@@ -86,5 +93,6 @@ public:
         sw->WriteLine(color);
         sw->WriteLine(warrantyPeriod);
         sw->WriteLine(price);
+        sw->WriteLine(type);
     }
 };

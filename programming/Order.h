@@ -2,9 +2,11 @@
 #include "IWarehouse.h"
 #include <msclr/event.h>
 
+
 using namespace System;
 using namespace System::IO;
 using namespace System::ComponentModel;
+using namespace System::Windows::Forms;
 
 ref class Order {
 private:
@@ -14,7 +16,7 @@ private:
     Int32 quantity;
     DateTime date;
     Decimal price;
-
+    Decimal discount;
     static IWarehouse^ data = nullptr;
 
     Int32 GenerateRandomId() {
@@ -22,15 +24,12 @@ private:
         return random->Next(1000, 10000);
     }
 
-    
-
-
 public:
     event PropertyChangedEventHandler^ PropertyChanged;
 
     Order(Int32 customer, Int32 product, Int32 quantity, DateTime date)
-        : id(GenerateRandomId()), customer(customer), product(product), quantity(quantity), date(date) {
-        CalculatePrice(); 
+        : id(GenerateRandomId()), customer(customer), product(product), quantity(quantity), date(date), discount(0) {
+        CalculatePrice();
     }
 
     Order(StreamReader^ sr) {
@@ -40,6 +39,7 @@ public:
         quantity = Convert::ToInt32(sr->ReadLine());
         date = Convert::ToDateTime(sr->ReadLine());
         price = Convert::ToDecimal(sr->ReadLine());
+        discount = Convert::ToDecimal(sr->ReadLine()); // Загружаем скидку
     }
 
     property Int32 ID {
@@ -58,7 +58,7 @@ public:
         Product^ get() { return data->getProduct(product); }
         void set(Product^ value) {
             product = (data != nullptr) ? data->getProductObject(value) : 0;
-            CalculatePrice(); 
+            CalculatePrice();
             OnPropertyChanged("ProductObject");
         }
     }
@@ -81,6 +81,10 @@ public:
         Decimal get() { return price; }
     }
 
+    property Decimal Discount {
+        Decimal get() { return discount; }
+    }
+
     void SetDB(IWarehouse^ _data) { data = _data; }
 
     void Save(StreamWriter^ sw) {
@@ -90,12 +94,22 @@ public:
         sw->WriteLine(quantity);
         sw->WriteLine(date);
         sw->WriteLine(price);
+        sw->WriteLine(discount);
     }
 
     void CalculatePrice() {
         if (data != nullptr && ProductObject != nullptr) {
             Decimal pricePerUnit = ProductObject->Price;
-            price = quantity * pricePerUnit;
+            Decimal totalPrice = quantity * pricePerUnit;
+
+            // Применяем скидку 10%, если количество изделий больше или равно 10
+            if (quantity >= 10) {
+                Decimal discount = totalPrice * static_cast<Decimal>(0.1); // 10% скидка
+                price = Decimal::Subtract(totalPrice, discount);
+            }
+            else {
+                price = totalPrice; // Без скидки
+            }
         }
         else {
             price = 0;

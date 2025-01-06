@@ -92,6 +92,7 @@ public:
 
     property Decimal Price {
         Decimal get() { return price; }
+        void set(Decimal value) { price = value; }
     }
 
     void SetDB(IWarehouse^ _data) { data = _data; }

@@ -7,6 +7,7 @@ private:
 	String^ name;
 	String^ phone;;
 	String^ address;
+    String^ type;
 
 
 	Int32 GenerateRandomId() {
@@ -15,14 +16,15 @@ private:
 	}
 public:
 
-    Customer(String^ name, String^ phone, String^ address)
-        : id(GenerateRandomId()), name(name), phone(phone), address(address) {}
+    Customer(String^ name, String^ phone, String^ address, String^ type)
+        : id(GenerateRandomId()), name(name), phone(phone), address(address), type(type) {}
 
     Customer(StreamReader^ sr) {
         id = Convert::ToInt32(sr->ReadLine());
         name = sr->ReadLine();
         phone = sr->ReadLine();
         address = sr->ReadLine();
+        type = sr->ReadLine();
     }
 
     property Int32 ID {
@@ -44,6 +46,11 @@ public:
         void set(String^ value) { address = value; }
     }
 
+    property String^ Type {
+        String^ get() { return type; }
+        void set(String^ value) { type = value; }
+    }
+
     property Customer^ thisCustomer { 
         Customer^ get() { return this; }; 
     }
@@ -55,5 +62,6 @@ public:
         sw->WriteLine(name);
         sw->WriteLine(phone);
         sw->WriteLine(address);
+        sw->WriteLine(type);
     }
 };
