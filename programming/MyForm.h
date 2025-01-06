@@ -557,7 +557,7 @@ namespace programming {
 		OrdersCustomerID->DataSource = db::data->getCustomerSource();
 		OrdersCustomerID->ValueMember = "thisCustomer";
 		OrdersCustomerID->DisplayMember = "ID";
-		OrdersProductID->DataSource = db::data->getProductSource();
+		OrdersProductID->DataSource = db::data->GetAvailableProducts();
 		OrdersProductID->ValueMember = "thisProduct";
 		OrdersProductID->DisplayMember = "ID";
 
@@ -682,49 +682,36 @@ namespace programming {
 						throw gcnew Exception("Количество заказов должно быть положительным числом");
 					}
 
-					// Получаем объект заказа, связанный с текущей строкой
 					Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
 
-					// Получаем текущее количество товара на складе
 					Int32 warehouseQuantity = db::data->GetProductQuantity(order->ProductObject->ID);
 
-					// Проверяем, что количество в заказе не превышает количество на складе
 					if (count > warehouseQuantity) {
 						throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
 					}
 
-					// Обновляем количество товара в заказе
 					order->Quantity = count;
 
-					// Пересчитываем стоимость заказа
 					order->CalculatePrice();
 
-					// Обновляем отображение в DataGridView
 					dataGridView->Refresh();
 				}
 				else if (columnName == "OrdersProductID") {
-					// Получаем объект заказа, связанный с текущей строкой
 					Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
 
-					// Получаем новый продукт по ID
 					Product^ newProduct = db::data->getProduct(Convert::ToInt32(newValue));
 					if (newProduct != nullptr) {
-						// Обновляем продукт в заказе
 						order->ProductObject = newProduct;
 
-						// Получаем текущее количество товара на складе для нового продукта
 						Int32 warehouseQuantity = db::data->GetProductQuantity(newProduct->ID);
 
-						// Проверяем, что количество в заказе не превышает количество на складе
 						if (order->Quantity > warehouseQuantity) {
 							throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
 						}
 
-						// Пересчитываем стоимость заказа
 						order->CalculatePrice();
 					}
 
-					// Обновляем отображение в DataGridView
 					dataGridView->Refresh();
 				}
 			}
@@ -742,50 +729,38 @@ namespace programming {
 	}
 	void DeleteRow(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
 		try {
-			// Проверка, выбрана ли строка
 			if (dataGridView->SelectedCells->Count == 0) {
 				MessageBox::Show("Не выбрана ни одна строка для удаления.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 				return;
 			}
-
-			// Получаем индекс выбранной строки
 			int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
 
-			// Проверка корректности индекса
 			if (selectedRowIndex < 0 || selectedRowIndex >= dataSource->Count) {
 				MessageBox::Show("Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 				return;
 			}
 
-			// Получаем объект для удаления
 			Object^ itemToDelete = dataSource[selectedRowIndex];
 
-			// Обработка удаления в зависимости от типа объекта
 			if (itemToDelete->GetType() == Customer::typeid) {
-				// Если удаляется клиент, удаляем все его заказы
 				Customer^ customerToDelete = (Customer^)itemToDelete;
 				db::data->DeleteOrdersByCustomerID(customerToDelete->ID);
 			}
 			else if (itemToDelete->GetType() == Product::typeid) {
-				// Если удаляется продукт, удаляем все заказы и записи на складе
 				Product^ productToDelete = (Product^)itemToDelete;
 				db::data->DeleteOrdersByProductID(productToDelete->ID);
 				db::data->DeleteWarehouseByProductID(productToDelete->ID);
 			}
 			else if (itemToDelete->GetType() == Warehouse::typeid) {
-				// Если удаляется запись со склада, удаляем все заказы с этим товаром
 				Warehouse^ warehouseToDelete = (Warehouse^)itemToDelete;
 				db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
 			}
 
-			// Удаляем объект из источника данных
 			dataSource->RemoveAt(selectedRowIndex);
 
-			// Обновляем DataGridView
 			dataGridView->DataSource = nullptr;
 			dataGridView->DataSource = dataSource;
 
-			// Если удаляется клиент, продукт или запись со склада, обновляем связанные DataGridView
 			if (itemToDelete->GetType() == Customer::typeid || itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
 				dataOrders->DataSource = nullptr;
 				dataOrders->DataSource = db::data->getOrderSource();
@@ -796,7 +771,6 @@ namespace programming {
 				}
 			}
 
-			// Сохраняем изменения в базе данных
 			db::data->Save();
 		}
 		catch (ArgumentOutOfRangeException^ ex) {
@@ -853,6 +827,10 @@ namespace programming {
 		if (db::data->getCustomerSource()->Count < 1)
 		{
 			MessageBox::Show("Заполните список заказчиков");
+			return;
+		}
+		if (db::data->GetAvailableProducts()->Count == 0) {
+			MessageBox::Show("Нет доступных изделий на складе");
 			return;
 		}
 		Order^ newOrder = gcnew Order(0, 0, 30, DateTime::Now);

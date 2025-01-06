@@ -47,6 +47,15 @@ public:
 		}
 		return totalQuantity;
 	}
+	List<Product^>^ GetAvailableProducts() {
+		List<Product^>^ availableProducts = gcnew List<Product^>();
+		for each (Product ^ product in db::data->getProductSource()) {
+			if (db::data->GetProductQuantity(product->ID) > 0) {
+				availableProducts->Add(product);
+			}
+		}
+		return availableProducts;
+	}
 	void addWarehouse(Warehouse^ c) { warehouse->Add(c); c->SetDB(this); }
 	List<Warehouse^>^ getWarehouseSource() { return warehouse; }
 
@@ -117,14 +126,12 @@ public:
 	}
 
 	void DeleteWarehouseByProductID(Int32 productId) {
-		// Удаляем записи о товаре на складе
 		for (int i = warehouse->Count - 1; i >= 0; i--) {
 			if (warehouse[i]->ProductObject != nullptr && warehouse[i]->ProductObject->ID == productId) {
 				warehouse->RemoveAt(i);
 			}
 		}
 
-		// Удаляем заказы, связанные с этим товаром
 		for (int i = orders->Count - 1; i >= 0; i--) {
 			if (orders[i]->ProductObject != nullptr && orders[i]->ProductObject->ID == productId) {
 				orders->RemoveAt(i);
