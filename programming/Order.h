@@ -54,10 +54,10 @@ public:
         }
     }
 
-    property Product^ ProductObject {
-        Product^ get() { return data->getProduct(product); }
+    property Product^ WarehouseProductObject {
+        Product^ get() { return data->getWarehouseProduct(product); }
         void set(Product^ value) {
-            product = (data != nullptr) ? data->getProductObject(value) : 0;
+            product = (data != nullptr) ? data->getWarehouseProductObject(value) : 0;
             CalculatePrice();
             OnPropertyChanged("ProductObject");
         }
@@ -98,14 +98,15 @@ public:
     }
 
     void CalculatePrice() {
-        if (data != nullptr && ProductObject != nullptr) {
-            Decimal pricePerUnit = ProductObject->Price;
+        if (data != nullptr && WarehouseProductObject != nullptr) {
+            Decimal pricePerUnit = WarehouseProductObject->Price;
             Decimal totalPrice = quantity * pricePerUnit;
 
             // ѕримен€ем скидку 10%, если количество изделий больше или равно 10
             if (quantity >= 10) {
                 Decimal discount = totalPrice * static_cast<Decimal>(0.1); // 10% скидка
                 price = Decimal::Subtract(totalPrice, discount);
+  
             }
             else {
                 price = totalPrice; // Ѕез скидки

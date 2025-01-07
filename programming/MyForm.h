@@ -524,7 +524,7 @@ namespace programming {
 			// 
 			// OrdersProductID
 			// 
-			this->OrdersProductID->DataPropertyName = L"ProductObject";
+			this->OrdersProductID->DataPropertyName = L"WarehouseProductObject";
 			this->OrdersProductID->HeaderText = L"Артикула изделия";
 			this->OrdersProductID->Name = L"OrdersProductID";
 			this->OrdersProductID->Resizable = System::Windows::Forms::DataGridViewTriState::True;
@@ -594,9 +594,9 @@ namespace programming {
 		OrdersCustomerID->DataSource = db::data->getCustomerSource();
 		OrdersCustomerID->ValueMember = "thisCustomer";
 		OrdersCustomerID->DisplayMember = "ID";
-		OrdersProductID->DataSource = db::data->GetAvailableProducts();
-		OrdersProductID->ValueMember = "thisProduct";
-		OrdersProductID->DisplayMember = "ID";
+		OrdersProductID->DataSource = db::data->getWarehouseSource();
+		OrdersProductID->ValueMember = "thisWarehouseProduct";
+		OrdersProductID->DisplayMember = "thisWarehouseProductID";
 
 
 	}
@@ -720,11 +720,6 @@ namespace programming {
 					return;
 				}
 
-				OrdersProductID->DataSource = nullptr;
-				OrdersProductID->DataSource = db::data->GetAvailableProducts();
-				OrdersProductID->ValueMember = "thisProduct";
-				OrdersProductID->DisplayMember = "ID";
-
 				dataOrders->DataSource = nullptr;
 				dataOrders->DataSource = db::data->getOrderSource();
 				dataOrders->Refresh();
@@ -781,7 +776,7 @@ namespace programming {
 
 					Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
 
-					Int32 warehouseQuantity = db::data->GetProductQuantity(order->ProductObject->ID);
+					Int32 warehouseQuantity = db::data->GetProductQuantity(order->WarehouseProductObject->ID);
 
 					if (count > warehouseQuantity) {
 						throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
@@ -799,25 +794,7 @@ namespace programming {
 
 					dataGridView->Refresh();
 				}
-				else if (columnName == "OrdersProductID") {
-					Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
-
-					Product^ newProduct = db::data->getProduct(Convert::ToInt32(newValue));
-					if (newProduct != nullptr) {
-						order->ProductObject = newProduct;
-
-						Int32 warehouseQuantity = db::data->GetProductQuantity(newProduct->ID);
-
-						if (order->Quantity > warehouseQuantity) {
-							throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
-						}
-
-						order->CalculatePrice();
-					}
-					dataGridView->Refresh();
-				}
-}
-
+			}
 			db::data->Save();
 		}
 		catch (FormatException^) {
@@ -869,14 +846,24 @@ namespace programming {
 			}
 			else if (itemToDelete->GetType() == Warehouse::typeid) {
 				Warehouse^ warehouseToDelete = (Warehouse^)itemToDelete;
-				db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
+				if (warehouseToDelete->ProductObject != nullptr) { 
+					db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
 
-				MessageBox::Show(
-					"Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.",
-					"Удаление со склада",
-					MessageBoxButtons::OK,
-					MessageBoxIcon::Information
-				);
+					MessageBox::Show(
+						"Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.",
+						"Удаление со склада",
+						MessageBoxButtons::OK,
+						MessageBoxIcon::Information
+					);
+				}
+				else {
+					MessageBox::Show(
+						"Товар не найден или был удален ранее.",
+						"Ошибка",
+						MessageBoxButtons::OK,
+						MessageBoxIcon::Warning
+					);
+				}
 			}
 			else if (itemToDelete->GetType() == Order::typeid) {
 				Order^ orderToDelete = (Order^)itemToDelete;
@@ -901,13 +888,18 @@ namespace programming {
 				if (itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
 					dataWarehouse->DataSource = nullptr;
 					dataWarehouse->DataSource = db::data->getWarehouseSource();
+
+					if (itemToDelete->GetType() == Product::typeid) {
+						dataProducts->DataSource = nullptr;
+						dataProducts->DataSource = db::data->getProductSource();
+					}
 				}
 			}
 
 			db::data->Save();
 		}
 		catch (ArgumentOutOfRangeException^ ex) {
-			MessageBox::Show("Ошибка: Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("Ошибка: Некорректный индекс строки. " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 		}
 		catch (Exception^ ex) {
 			MessageBox::Show("Ошибка при удалении строки: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
@@ -945,20 +937,15 @@ namespace programming {
 		db::data->addWarehouse(newWarehouse);
 		dataWarehouse->DataSource = nullptr;
 		dataWarehouse->DataSource = db::data->getWarehouseSource();
-		OrdersProductID->DataSource = nullptr;
-		OrdersProductID->DataSource = db::data->GetAvailableProducts();
-		OrdersProductID->ValueMember = "thisProduct";
-		OrdersProductID->DisplayMember = "ID";
 		db::data->Save();
 	}
 
 	private: System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
 		DeleteRow(dataWarehouse, db::data->getWarehouseSource());
 
-		OrdersProductID->DataSource = nullptr;
-		OrdersProductID->DataSource = db::data->GetAvailableProducts();
-		OrdersProductID->ValueMember = "thisProduct";
-		OrdersProductID->DisplayMember = "ID";
+		dataOrders->DataSource = nullptr;
+		dataOrders->DataSource = db::data->getOrderSource();
+		dataOrders->Refresh();
 	}
 	private: System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
 		if (db::data->getProductSource()->Count < 1)
@@ -971,7 +958,7 @@ namespace programming {
 			MessageBox::Show("Заполните список заказчиков");
 			return;
 		}
-		if (db::data->GetAvailableProducts()->Count == 0) {
+		if (db::data->getWarehouseSource()->Count < 1) {
 			MessageBox::Show("Нет доступных изделий на складе");
 			return;
 		}
@@ -979,12 +966,15 @@ namespace programming {
 		db::data->addOrder(newOrder);
 		dataOrders->DataSource = nullptr;
 		dataOrders->DataSource = db::data->getOrderSource();
+		OrdersProductID->DataSource = nullptr;
+		OrdersProductID->DataSource = db::data->getWarehouseSource();
+		OrdersProductID->ValueMember = "thisWarehouseProduct";
+		OrdersProductID->DisplayMember = "thisWarehouseProductID";
 		db::data->Save();
 	}
 
 	private: System::Void buttonOrdersDel_Click(System::Object^ sender, System::EventArgs^ e) {
 		DeleteRow(dataOrders, db::data->getOrderSource());
-
 	}
 
 };

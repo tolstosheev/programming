@@ -32,30 +32,41 @@ public:
 	void addCustomer(Customer^ c) { customers->Add(c); }
 	virtual Customer^ getCustomer(int idx) { return (idx >= 0 && idx < customers->Count) ? customers[idx] : nullptr; }
 	List<Customer^>^ getCustomerSource() { return customers; }
-	virtual Int32 getCustomerObject(Customer^ object) { return customers->FindIndex(gcnew Predicate<Customer^>(object, &Customer::Equals)); ; }
+	virtual Int32 getCustomerObject(Customer^ object) { return customers->FindIndex(gcnew Predicate<Customer^>(object, &Customer::Equals)); }
 
 	void addProduct(Product^ c) { products->Add(c); }
 	virtual Product^ getProduct(int idx) { return (idx >= 0 && idx < products->Count) ? products[idx] : nullptr; }
 	List<Product^>^ getProductSource() { return products; }
-	virtual Int32 getProductObject(Product^ object) { return products->FindIndex(gcnew Predicate<Product^>(object, &Product::Equals)); ; }
+	virtual Int32 getProductObject(Product^ object) { return products->FindIndex(gcnew Predicate<Product^>(object, &Product::Equals)); }
+	virtual Int32 getWarehouseProductObject(Product^ object) {
+		for (int i = 0; i < warehouse->Count; i++) {
+			Warehouse^ warehouseItem = warehouse[i];
+			if (warehouseItem->ProductObject != nullptr &&
+				(warehouseItem->ProductObject == object || warehouseItem->ProductObject->ID == object->ID)) {
+				return i; 
+			}
+		}
+		return -1; 
+	}
+
+	virtual Product^ getWarehouseProduct(Int32 index) {
+		if (index >= 0 && index < warehouse->Count) { 
+			Warehouse^ warehouseItem = warehouse[index]; 
+			if (warehouseItem->ProductObject != nullptr) { 
+				return warehouseItem->ProductObject; 
+			}
+		}
+		return nullptr; 
+	}
+
 	virtual Int32 GetProductQuantity(Int32 productId) {
 		Int32 totalQuantity = 0;
 		for each (Warehouse ^ warehouseItem in warehouse) {
-			if (warehouseItem->ProductObject != nullptr && warehouseItem->ProductObject->ID == productId) {
-				totalQuantity += warehouseItem->Quantity;
-			}
+			totalQuantity += (warehouseItem->ProductObject != nullptr && warehouseItem->ProductObject->ID == productId) ? warehouseItem->Quantity : 0;
 		}
 		return totalQuantity;
 	}
-	List<Product^>^ GetAvailableProducts() {
-		List<Product^>^ availableProducts = gcnew List<Product^>();
-		for each (Product ^ product in db::data->getProductSource()) {
-			if (db::data->GetProductQuantity(product->ID) > 0) {
-				availableProducts->Add(product);
-			}
-		}
-		return availableProducts;
-	}
+
 	void addWarehouse(Warehouse^ c) { warehouse->Add(c); c->SetDB(this); }
 	List<Warehouse^>^ getWarehouseSource() { return warehouse; }
 
@@ -119,7 +130,7 @@ public:
 
 	void DeleteOrdersByProductID(Int32 productId) {
 		for (int i = orders->Count - 1; i >= 0; i--) {
-			if (orders[i]->ProductObject->ID == productId) {
+			if (orders[i]->WarehouseProductObject != nullptr && orders[i]->WarehouseProductObject->ID == productId) {
 				orders->RemoveAt(i);
 			}
 		}
@@ -133,7 +144,7 @@ public:
 		}
 
 		for (int i = orders->Count - 1; i >= 0; i--) {
-			if (orders[i]->ProductObject != nullptr && orders[i]->ProductObject->ID == productId) {
+			if (orders[i]->WarehouseProductObject != nullptr && orders[i]->WarehouseProductObject->ID == productId) {
 				orders->RemoveAt(i);
 			}
 		}

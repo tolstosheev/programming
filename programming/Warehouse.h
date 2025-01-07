@@ -29,7 +29,7 @@ private:
         else {
             price = 0;
         }
-        OnPropertyChanged("Price"); 
+        OnPropertyChanged("Price");
     }
 
     void UpdateStatus() {
@@ -39,7 +39,7 @@ private:
         else {
             status = "Нет в наличии";
         }
-        OnPropertyChanged("Status"); 
+        OnPropertyChanged("Status");
     }
 
 public:
@@ -47,8 +47,8 @@ public:
 
     Warehouse(Int32 product, Int32 quantity, String^ status)
         : id(GenerateRandomId()), product(product), quantity(quantity), status(status) {
-        CalculatePrice(); 
-        UpdateStatus(); 
+        CalculatePrice();
+        UpdateStatus();
     }
 
     Warehouse(StreamReader^ sr) {
@@ -76,8 +76,8 @@ public:
         Int32 get() { return quantity; }
         void set(Int32 value) {
             quantity = value;
-            CalculatePrice(); 
-            UpdateStatus(); 
+            CalculatePrice();
+            UpdateStatus();
             OnPropertyChanged("Quantity");
         }
     }
@@ -105,7 +105,18 @@ public:
         sw->WriteLine(price);
     }
 
+    property Product^ thisWarehouseProduct {
+        Product^ get() {
+            return this->ProductObject;
+        }
+    }
+
+    property Int32 thisWarehouseProductID {
+        Int32 get() {
+            return this->ProductObject->ID;
+        }
+    }
     void OnPropertyChanged(String^ propertyName) {
-            PropertyChanged(this, gcnew PropertyChangedEventArgs(propertyName));
+        PropertyChanged(this, gcnew PropertyChangedEventArgs(propertyName));
     }
 };
