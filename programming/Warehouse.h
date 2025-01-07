@@ -13,18 +13,15 @@ private:
     Int32 quantity;
     String^ status;
     Decimal price;
-
     static IWarehouse^ data = nullptr;
 
     Int32 GenerateRandomId() {
-        Random^ random = gcnew Random();
-        return random->Next(1000, 10000);
+        return (gcnew Random())->Next(1000, 10000);
     }
 
     void CalculatePrice() {
         if (data != nullptr && ProductObject != nullptr) {
-            Decimal pricePerUnit = ProductObject->Price;
-            price = quantity * pricePerUnit;
+            price = quantity * ProductObject->Price;
         }
         else {
             price = 0;
@@ -33,12 +30,7 @@ private:
     }
 
     void UpdateStatus() {
-        if (quantity > 0) {
-            status = "В наличии";
-        }
-        else {
-            status = "Нет в наличии";
-        }
+        status = quantity > 0 ? "В наличии" : "Нет в наличии";
         OnPropertyChanged("Status");
     }
 
@@ -59,41 +51,13 @@ public:
         price = Convert::ToDecimal(sr->ReadLine());
     }
 
-    property Int32 ID {
-        Int32 get() { return id; }
-    }
-
-    property Product^ ProductObject {
-        Product^ get() { return data->getProduct(product); }
-        void set(Product^ value) {
-            product = (data != nullptr) ? data->getProductObject(value) : 0;
-            CalculatePrice();
-            OnPropertyChanged("ProductObject");
-        }
-    }
-
-    property Int32 Quantity {
-        Int32 get() { return quantity; }
-        void set(Int32 value) {
-            quantity = value;
-            CalculatePrice();
-            UpdateStatus();
-            OnPropertyChanged("Quantity");
-        }
-    }
-
-    property String^ Status {
-        String^ get() { return status; }
-        void set(String^ value) {
-            status = value;
-            OnPropertyChanged("Status");
-        }
-    }
-
-    property Decimal Price {
-        Decimal get() { return price; }
-        void set(Decimal value) { price = value; }
-    }
+    property Int32 ID { Int32 get() { return id; } }
+    property Product^ ProductObject { Product^ get() { return data->getProduct(product); } void set(Product^ value) { product = data->getProductObject(value); CalculatePrice(); } }
+    property Int32 Quantity { Int32 get() { return quantity; } void set(Int32 value) { quantity = value; CalculatePrice(); UpdateStatus(); } }
+    property String^ Status { String^ get() { return status; } void set(String^ value) { status = value; OnPropertyChanged("Status"); } }
+    property Decimal Price { Decimal get() { return price; } void set(Decimal value) { price = value; } }
+    property Product^ thisWarehouseProduct {Product^ get() { return this->ProductObject; }}
+    property Int32 thisWarehouseProductID {Int32 get() { return this->ProductObject->ID; }}
 
     void SetDB(IWarehouse^ _data) { data = _data; }
 
@@ -105,17 +69,6 @@ public:
         sw->WriteLine(price);
     }
 
-    property Product^ thisWarehouseProduct {
-        Product^ get() {
-            return this->ProductObject;
-        }
-    }
-
-    property Int32 thisWarehouseProductID {
-        Int32 get() {
-            return this->ProductObject->ID;
-        }
-    }
     void OnPropertyChanged(String^ propertyName) {
         PropertyChanged(this, gcnew PropertyChangedEventArgs(propertyName));
     }

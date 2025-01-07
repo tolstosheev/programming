@@ -2,11 +2,9 @@
 #include "IWarehouse.h"
 #include <msclr/event.h>
 
-
 using namespace System;
 using namespace System::IO;
 using namespace System::ComponentModel;
-using namespace System::Windows::Forms;
 
 ref class Order {
 private:
@@ -20,8 +18,7 @@ private:
     static IWarehouse^ data = nullptr;
 
     Int32 GenerateRandomId() {
-        Random^ random = gcnew Random();
-        return random->Next(1000, 10000);
+        return (gcnew Random())->Next(1000, 10000);
     }
 
 public:
@@ -39,51 +36,16 @@ public:
         quantity = Convert::ToInt32(sr->ReadLine());
         date = Convert::ToDateTime(sr->ReadLine());
         price = Convert::ToDecimal(sr->ReadLine());
-        discount = Convert::ToDecimal(sr->ReadLine()); // Загружаем скидку
+        discount = Convert::ToDecimal(sr->ReadLine());
     }
 
-    property Int32 ID {
-        Int32 get() { return id; }
-    }
-
-    property Customer^ CustomerObject {
-        Customer^ get() { return data->getCustomer(customer); };
-        void set(Customer^ value) {
-            customer = (data != nullptr) ? data->getCustomerObject(value) : 0;
-            OnPropertyChanged("CustomerObject");
-        }
-    }
-
-    property Product^ WarehouseProductObject {
-        Product^ get() { return data->getWarehouseProduct(product); }
-        void set(Product^ value) {
-            product = (data != nullptr) ? data->getWarehouseProductObject(value) : 0;
-            CalculatePrice();
-            OnPropertyChanged("ProductObject");
-        }
-    }
-
-    property Int32 Quantity {
-        Int32 get() { return quantity; }
-        void set(Int32 value) {
-            quantity = value;
-            CalculatePrice();
-            OnPropertyChanged("Quantity");
-        }
-    }
-
-    property DateTime Date {
-        DateTime get() { return date; }
-        void set(DateTime value) { date = value; }
-    }
-
-    property Decimal Price {
-        Decimal get() { return price; }
-    }
-
-    property Decimal Discount {
-        Decimal get() { return discount; }
-    }
+    property Int32 ID { Int32 get() { return id; } }
+    property Customer^ CustomerObject { Customer^ get() { return data->getCustomer(customer); } void set(Customer^ value) { customer = data->getCustomerObject(value); } }
+    property Product^ WarehouseProductObject { Product^ get() { return data->getWarehouseProduct(product); } void set(Product^ value) { product = data->getWarehouseProductObject(value); CalculatePrice(); } }
+    property Int32 Quantity { Int32 get() { return quantity; } void set(Int32 value) { quantity = value; CalculatePrice(); } }
+    property DateTime Date { DateTime get() { return date; } void set(DateTime value) { date = value; } }
+    property Decimal Price { Decimal get() { return price; } }
+    property Decimal Discount { Decimal get() { return discount; } }
 
     void SetDB(IWarehouse^ _data) { data = _data; }
 
@@ -102,14 +64,12 @@ public:
             Decimal pricePerUnit = WarehouseProductObject->Price;
             Decimal totalPrice = quantity * pricePerUnit;
 
-            // Применяем скидку 10%, если количество изделий больше или равно 10
             if (quantity >= 10) {
-                Decimal discount = totalPrice * static_cast<Decimal>(0.1); // 10% скидка
+                discount = totalPrice * static_cast<Decimal>(0.1);
                 price = Decimal::Subtract(totalPrice, discount);
-  
             }
             else {
-                price = totalPrice; // Без скидки
+                price = totalPrice;
             }
         }
         else {

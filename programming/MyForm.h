@@ -812,72 +812,49 @@ namespace programming {
 				MessageBox::Show("Не выбрана ни одна строка для удаления.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 				return;
 			}
-			int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
 
+			int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
 			if (selectedRowIndex < 0 || selectedRowIndex >= dataSource->Count) {
 				MessageBox::Show("Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
 				return;
 			}
 
 			Object^ itemToDelete = dataSource[selectedRowIndex];
+			String^ message = "Элемент удален.";
+			String^ title = "Удаление";
 
 			if (itemToDelete->GetType() == Customer::typeid) {
 				Customer^ customerToDelete = (Customer^)itemToDelete;
 				db::data->DeleteOrdersByCustomerID(customerToDelete->ID);
-
-				MessageBox::Show(
-					"Заказчик '" + customerToDelete->Name + "' удален, а также все его заказы.",
-					"Удаление заказчика",
-					MessageBoxButtons::OK,
-					MessageBoxIcon::Information
-				);
+				message = "Заказчик '" + customerToDelete->Name + "' удален, а также все его заказы.";
+				title = "Удаление заказчика";
 			}
 			else if (itemToDelete->GetType() == Product::typeid) {
 				Product^ productToDelete = (Product^)itemToDelete;
 				db::data->DeleteOrdersByProductID(productToDelete->ID);
 				db::data->DeleteWarehouseByProductID(productToDelete->ID);
-
-				MessageBox::Show(
-					"Товар '" + productToDelete->Name + "' удален из изделий, заказов и склада.",
-					"Удаление товара",
-					MessageBoxButtons::OK,
-					MessageBoxIcon::Information
-				);
+				message = "Товар '" + productToDelete->Name + "' удален из изделий, заказов и склада.";
+				title = "Удаление товара";
 			}
 			else if (itemToDelete->GetType() == Warehouse::typeid) {
 				Warehouse^ warehouseToDelete = (Warehouse^)itemToDelete;
-				if (warehouseToDelete->ProductObject != nullptr) { 
+				if (warehouseToDelete->ProductObject != nullptr) {
 					db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
-
-					MessageBox::Show(
-						"Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.",
-						"Удаление со склада",
-						MessageBoxButtons::OK,
-						MessageBoxIcon::Information
-					);
+					message = "Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.";
+					title = "Удаление со склада";
 				}
 				else {
-					MessageBox::Show(
-						"Товар не найден или был удален ранее.",
-						"Ошибка",
-						MessageBoxButtons::OK,
-						MessageBoxIcon::Warning
-					);
+					MessageBox::Show("Товар не найден или был удален ранее.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+					return;
 				}
 			}
 			else if (itemToDelete->GetType() == Order::typeid) {
 				Order^ orderToDelete = (Order^)itemToDelete;
-
-				MessageBox::Show(
-					"Заказ №" + orderToDelete->ID + " удален.",
-					"Удаление заказа",
-					MessageBoxButtons::OK,
-					MessageBoxIcon::Information
-				);
+				message = "Заказ №" + orderToDelete->ID + " удален.";
+				title = "Удаление заказа";
 			}
 
 			dataSource->RemoveAt(selectedRowIndex);
-
 			dataGridView->DataSource = nullptr;
 			dataGridView->DataSource = dataSource;
 
@@ -896,6 +873,7 @@ namespace programming {
 				}
 			}
 
+			MessageBox::Show(message, title, MessageBoxButtons::OK, MessageBoxIcon::Information);
 			db::data->Save();
 		}
 		catch (ArgumentOutOfRangeException^ ex) {
@@ -906,76 +884,74 @@ namespace programming {
 		}
 	}
 
-	private: System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-		Customer^ newCustomer = gcnew Customer("Новый заказчик", "+7-999-999-99-99", "ул. Ленина, 12А, Москва, 123456, Россия", "Физическое лицо");
-		db::data->addCustomer(newCustomer);
-		dataCustomers->DataSource = nullptr;
-		dataCustomers->DataSource = db::data->getCustomerSource();
-		db::data->Save();
-	}
+	private:
+    void UpdateDataSourceAndSave(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
+        dataGridView->DataSource = nullptr;
+        dataGridView->DataSource = dataSource;
+        db::data->Save();
+    }
 
-	private: System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
-		DeleteRow(dataCustomers, db::data->getCustomerSource());
-	}
-	private: System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-		Product^ newProduct = gcnew Product("Новый продукт", "12 12 12", 23, "Дерево", "Коричневый", 12, 3000, "Гостиная");
-		db::data->addProduct(newProduct);
-		dataProducts->DataSource = nullptr;
-		dataProducts->DataSource = db::data->getProductSource();
-		db::data->Save();
-	}
-	private: System::Void buttonProductsDel_Click(System::Object^ sender, System::EventArgs^ e) {
-		DeleteRow(dataProducts, db::data->getProductSource());
-	}
-	private: System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (db::data->getProductSource()->Count < 1)
-		{
-			MessageBox::Show("Заполните список изделий");
-			return;
-		}
-		Warehouse^ newWarehouse = gcnew Warehouse(0, 32, "В наличии");
-		db::data->addWarehouse(newWarehouse);
-		dataWarehouse->DataSource = nullptr;
-		dataWarehouse->DataSource = db::data->getWarehouseSource();
-		db::data->Save();
-	}
+    template<typename T>
+    void AddItem(DataGridView^ dataGridView, System::Collections::IList^ dataSource, T^ newItem) {
+        db::data->addItem(newItem);
+        UpdateDataSourceAndSave(dataGridView, dataSource);
+    }
 
-	private: System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
-		DeleteRow(dataWarehouse, db::data->getWarehouseSource());
+    bool CheckDataAvailability(System::Collections::IList^ dataSource, String^ errorMessage) {
+        if (dataSource->Count < 1) {
+            MessageBox::Show(errorMessage);
+            return false;
+        }
+        return true;
+    }
 
-		dataOrders->DataSource = nullptr;
-		dataOrders->DataSource = db::data->getOrderSource();
-		dataOrders->Refresh();
-	}
-	private: System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-		if (db::data->getProductSource()->Count < 1)
-		{
-			MessageBox::Show("Заполните список изделий");
-			return;
-		}
-		if (db::data->getCustomerSource()->Count < 1)
-		{
-			MessageBox::Show("Заполните список заказчиков");
-			return;
-		}
-		if (db::data->getWarehouseSource()->Count < 1) {
-			MessageBox::Show("Нет доступных изделий на складе");
-			return;
-		}
-		Order^ newOrder = gcnew Order(0, 0, 1, DateTime::Now);
-		db::data->addOrder(newOrder);
-		dataOrders->DataSource = nullptr;
-		dataOrders->DataSource = db::data->getOrderSource();
-		OrdersProductID->DataSource = nullptr;
-		OrdersProductID->DataSource = db::data->getWarehouseSource();
-		OrdersProductID->ValueMember = "thisWarehouseProduct";
-		OrdersProductID->DisplayMember = "thisWarehouseProductID";
-		db::data->Save();
-	}
+private: 
+    System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+        Customer^ newCustomer = gcnew Customer("Новый заказчик", "+7-999-999-99-99", "ул. Ленина, 12А, Москва, 123456, Россия", "Физическое лицо");
+        AddItem(dataCustomers, db::data->getCustomerSource(), newCustomer);
+    }
 
-	private: System::Void buttonOrdersDel_Click(System::Object^ sender, System::EventArgs^ e) {
-		DeleteRow(dataOrders, db::data->getOrderSource());
-	}
+    System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+        DeleteRow(dataCustomers, db::data->getCustomerSource());
+    }
+
+    System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+        Product^ newProduct = gcnew Product("Новый продукт", "12 12 12", 23, "Дерево", "Коричневый", 12, 3000, "Гостиная");
+        AddItem(dataProducts, db::data->getProductSource(), newProduct);
+    }
+
+    System::Void buttonProductsDel_Click(System::Object^ sender, System::EventArgs^ e) {
+        DeleteRow(dataProducts, db::data->getProductSource());
+    }
+
+    System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+        if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
+        Warehouse^ newWarehouse = gcnew Warehouse(0, 10, "В наличии");
+        AddItem(dataWarehouse, db::data->getWarehouseSource(), newWarehouse);
+    }
+
+    System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
+        DeleteRow(dataWarehouse, db::data->getWarehouseSource());
+        UpdateDataSourceAndSave(dataOrders, db::data->getOrderSource());
+    }
+
+    System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+        if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
+        if (!CheckDataAvailability(db::data->getCustomerSource(), "Заполните список заказчиков")) return;
+        if (!CheckDataAvailability(db::data->getWarehouseSource(), "Нет доступных изделий на складе")) return;
+
+        Order^ newOrder = gcnew Order(0, 0, 1, DateTime::Now);
+        AddItem(dataOrders, db::data->getOrderSource(), newOrder);
+
+        OrdersProductID->DataSource = nullptr;
+        OrdersProductID->DataSource = db::data->getWarehouseSource();
+        OrdersProductID->ValueMember = "thisWarehouseProduct";
+        OrdersProductID->DisplayMember = "thisWarehouseProductID";
+    }
+
+    System::Void buttonOrdersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+        DeleteRow(dataOrders, db::data->getOrderSource());
+    }
 
 };
 }
