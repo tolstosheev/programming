@@ -15,7 +15,8 @@ namespace programming {
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
-		db^ data;
+		db^ data;  // Экземпляр базы данных
+		// Конструктор формы
 		MyForm(void)
 		{
 			InitializeComponent();
@@ -30,6 +31,7 @@ namespace programming {
 		/// <summary>
 		/// Освободить все используемые ресурсы.
 		/// </summary>
+		/// Деструктор формы
 		~MyForm()
 		{
 			if (components)
@@ -41,6 +43,7 @@ namespace programming {
 	protected:
 
 	protected:
+	// Элементы управления формы
 	private: System::Windows::Forms::TabPage^ tabProducts;
 	private: System::Windows::Forms::TabPage^ tabWarehouse;
 	private: System::Windows::Forms::TabPage^ tabOrder;
@@ -50,41 +53,21 @@ namespace programming {
 	private: System::Windows::Forms::DataGridView^ dataWarehouse;
 	private: System::Windows::Forms::DataGridView^ dataOrders;
 
+	// Кнопки для управления данными
 	private: System::Windows::Forms::Button^ buttonCustomersDel;
 	private: System::Windows::Forms::Button^ buttonCustomersAdd;
-
 	private: System::Windows::Forms::Button^ buttonOrdersDel;
 	private: System::Windows::Forms::Button^ buttonOrdersAdd;
-
 	private: System::Windows::Forms::Button^ buttonWarehouseAdd;
 	private: System::Windows::Forms::Button^ buttonWarehouseDel;
 	private: System::Windows::Forms::Button^ buttonProductsDel;
 	private: System::Windows::Forms::Button^ buttonProductsAdd;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+	// Колонки для DataGridView
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseID;
 	private: System::Windows::Forms::DataGridViewComboBoxColumn^ WarehouseProductID;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductQuantity;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehouseProductStatus;
-
-
-
-
-
-
-
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ WarehousePrice;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersID;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ CustomersName;
@@ -111,7 +94,10 @@ namespace programming {
 		/// <summary>
 		/// Обязательная переменная конструктора.
 		/// </summary>
+		/// Контейнер для компонентов формы
 		System::ComponentModel::Container^ components;
+
+		// Списки типов клиентов и продуктов
 		List<String^>^ customerTypes;
 		List<String^>^ productTypes;
 
@@ -463,7 +449,7 @@ namespace programming {
 			// ProductsDimensions
 			// 
 			this->ProductsDimensions->DataPropertyName = L"Dimensions";
-			this->ProductsDimensions->HeaderText = L"Габариты";
+			this->ProductsDimensions->HeaderText = L"Габариты (см)";
 			this->ProductsDimensions->Name = L"ProductsDimensions";
 			// 
 			// ProductsWeight
@@ -600,358 +586,454 @@ namespace programming {
 
 
 	}
+//Основной обработчик событий изменения
+private: System::Void DataGridView_CellValidating(System::Object^ sender, System::Windows::Forms::DataGridViewCellValidatingEventArgs^ e) {
+	DataGridView^ dataGridView = (DataGridView^)sender;
 
-	private: System::Void DataGridView_CellValidating(System::Object^ sender, System::Windows::Forms::DataGridViewCellValidatingEventArgs^ e) {
-		DataGridView^ dataGridView = (DataGridView^)sender;
-
-		try {
-			DataGridViewCell^ cell = dataGridView->Rows[e->RowIndex]->Cells[e->ColumnIndex];
-			String^ newValue = e->FormattedValue->ToString();
-
-			if (String::IsNullOrEmpty(newValue)) {
-				throw gcnew Exception("Поле не может быть пустым");
-			}
-
-			if (cell->ValueType->ToString() == "System.Int32") {
-				Int32 x = Convert::ToInt32(newValue);
-				if (x < 0) {
-					throw gcnew Exception("Значение не может быть отрицательным");
-				}
-			}
-			else if (cell->ValueType->ToString() == "System.Decimal") {
-				Decimal x = Convert::ToDecimal(newValue);
-				if (x < 0) {
-					throw gcnew Exception("Значение не может быть отрицательным");
-				}
-			}
-			else if (cell->ValueType->ToString() == "System.DateTime") {
-				DateTime x = Convert::ToDateTime(newValue);
-				if (x > DateTime::Now) {
-					throw gcnew Exception("Дата не может быть в будущем");
-				}
-			}
-
-			String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
-
-			if (dataGridView == this->dataCustomers) {
-				if (columnName == "CustomersPhone") {
-					String^ phonePattern =
-						"^(\\+\\d{1,3}[-\\s]?)?(\\(\\d{3}\\)|\\d{3})[-\\s]?\\d{3}[-\\s]?\\d{2}[-\\s]?\\d{2}$";
-					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, phonePattern)) {
-						throw gcnew Exception(
-							"Телефон должен быть в одном из форматов:\n"
-							"+X-XXX-XXX-XX-XX, +X (XXX) XXX-XX-XX, XXX-XXX-XX-XX, (XXX) XXX-XX-XX, XXXXXXXXXXX"
-						);
-					}
-				}
-				else if (columnName == "CustomersAddress") {
-					String^ addressPattern =
-						"^[A-Za-zА-Яа-я0-9\\s\\-\\.]+,\\s*\\d+[A-Za-zА-Яа-я]?,\\s*[A-Za-zА-Яа-я\\s\\-\\.]+,[A-Za-z0-9\\s\\-]{3,10},\\s*[A-Za-zА-Яа-я\\s\\-\\.]+$";
-					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, addressPattern)) {
-						throw gcnew Exception(
-							"Адрес должен быть в формате:\n"
-							"Улица, Номер дома, Город, Индекс, Страна\n"
-							"Пример: ул. Ленина, 12А, Москва, 123456, Россия"
-						);
-					}
-				}
-			}
-			else if (dataGridView == this->dataProducts) {
-				if (columnName == "ProductsWeight") {
-					Decimal weight = Convert::ToDecimal(newValue);
-					if (weight <= 0) {
-						throw gcnew Exception("Вес изделия должен быть положительным числом");
-					}
-				}
-				else if (columnName == "ProductsDimensions") {
-					String^ dimensionsPattern = "^\\d+(\\s*[x,]\\s*|\\s+)\\d+(\\s*[x,]\\s*|\\s+)\\d+$";
-					if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, dimensionsPattern)) {
-						throw gcnew Exception(
-							"Габариты должны быть в формате: 'Длина x Ширина x Высота' или 'Длина Ширина Высота'\n"
-							"Пример: 120x60x80 или 120 60 80"
-						);
-					}
-
-					array<Char>^ separators = { 'x', ',', ' ' };
-					array<String^>^ dimensions = newValue->Split(separators, StringSplitOptions::RemoveEmptyEntries);
-
-					if (dimensions->Length != 3) {
-						throw gcnew Exception("Габариты должны состоять из трех чисел.");
-					}
-
-					Decimal length = Convert::ToDecimal(dimensions[0]);
-					Decimal width = Convert::ToDecimal(dimensions[1]);
-					Decimal height = Convert::ToDecimal(dimensions[2]);
-
-					if (length <= 0 || width <= 0 || height <= 0) {
-						throw gcnew Exception("Габариты должны быть положительными числами.");
-					}
-				}
-			}
-			else if (columnName == "WarehouseProductID") {
-				if (e->RowIndex < 0 || e->RowIndex >= dataGridView->RowCount) {
-					e->Cancel = true;
-					return;
-				}
-
-				Warehouse^ warehouse = (Warehouse^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
-
-				Int32 newProductId = Convert::ToInt32(newValue);
-				Product^ newProduct = nullptr;
-
-				for each (Product ^ product in db::data->getProductSource()) {
-					if (product->ID == newProductId) {
-						newProduct = product;
-						break;
-					}
-				}
-
-				if (newProduct != nullptr) {
-					warehouse->ProductObject = newProduct;
-				}
-				else {
-					MessageBox::Show(
-						"Товар с указанным ID не найден в списке изделий.",
-						"Ошибка",
-						MessageBoxButtons::OK,
-						MessageBoxIcon::Error
-					);
-					e->Cancel = true; 
-					return;
-				}
-
-				dataOrders->DataSource = nullptr;
-				dataOrders->DataSource = db::data->getOrderSource();
-				dataOrders->Refresh();
-
-				dataGridView->Refresh();
-			}
-			else if (columnName == "WarehouseProductQuantity") {
-				if (e->RowIndex < 0 || e->RowIndex >= dataGridView->RowCount) {
-					e->Cancel = true; 
-					return;
-				}
-
-				Warehouse^ warehouse = (Warehouse^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
-
-				Int32 newQuantity = Convert::ToInt32(newValue);
-
-				if (newQuantity < 0) {
-					MessageBox::Show(
-						"Количество изделий не может быть отрицательным.",
-						"Ошибка",
-						MessageBoxButtons::OK,
-						MessageBoxIcon::Error
-					);
-					e->Cancel = true; 
-					return;
-				}
-
-				warehouse->Quantity = newQuantity;
-
-				if (newQuantity > 0) {
-					warehouse->Status = "В наличии";
-				}
-				else {
-					warehouse->Status = "Нет в наличии";
-				}
-
-				if (warehouse->ProductObject != nullptr) {
-					warehouse->Price = newQuantity * warehouse->ProductObject->Price;
-				}
-				else {
-					warehouse->Price = 0;
-				}
-
-				dataGridView->Refresh();
-
-				db::data->Save();
-				}
-			else if (dataGridView == this->dataOrders) {
-				if (columnName == "OrdersCount") {
-					Int32 count = Convert::ToInt32(newValue);
-					if (count <= 0) {
-						throw gcnew Exception("Количество заказов должно быть положительным числом");
-					}
-
-					Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
-
-					Int32 warehouseQuantity = db::data->GetProductQuantity(order->WarehouseProductObject->ID);
-
-					if (count > warehouseQuantity) {
-						throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
-					}
-					order->Quantity = count;
-					if (order->Quantity >= 10) {
-						MessageBox::Show(
-							"Применена скидка 10% (оптовая поставка).",
-							"Скидка",
-							MessageBoxButtons::OK,
-							MessageBoxIcon::Information
-						);
-					}
-					order->CalculatePrice();
-
-					dataGridView->Refresh();
-				}
-			}
-			db::data->Save();
-		}
-		catch (FormatException^) {
-			MessageBox::Show("Неверный формат данных", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+	try {
+		if (e->RowIndex < 0 || e->RowIndex >= dataGridView->RowCount || e->ColumnIndex < 0 || e->ColumnIndex >= dataGridView->ColumnCount) {
 			e->Cancel = true;
+			return;
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show(ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			e->Cancel = true;
+
+		DataGridViewCell^ cell = dataGridView->Rows[e->RowIndex]->Cells[e->ColumnIndex];
+		String^ newValue = e->FormattedValue->ToString();
+
+		if (String::IsNullOrEmpty(newValue)) {
+			throw gcnew Exception("Поле не может быть пустым");
 		}
-	}
-	void DeleteRow(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
-		try {
-			if (dataGridView->SelectedCells->Count == 0) {
-				MessageBox::Show("Не выбрана ни одна строка для удаления.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+
+		if (cell->ValueType->ToString() == "System.Int32") {
+			Int32 x = Convert::ToInt32(newValue);
+			if (x < 0) {
+				throw gcnew Exception("Значение не может быть отрицательным");
+			}
+		}
+		else if (cell->ValueType->ToString() == "System.Decimal") {
+			Decimal x = Convert::ToDecimal(newValue);
+			if (x < 0) {
+				throw gcnew Exception("Значение не может быть отрицательным");
+			}
+		}
+		else if (cell->ValueType->ToString() == "System.DateTime") {
+			DateTime x = Convert::ToDateTime(newValue);
+			if (x > DateTime::Now) {
+				throw gcnew Exception("Дата не может быть в будущем");
+			}
+		}
+
+		String^ columnName = dataGridView->Columns[e->ColumnIndex]->Name;
+
+		if (dataGridView == this->dataCustomers) {
+			if (columnName == "CustomersPhone") {
+				String^ phonePattern =
+					"^(\\+\\d{1,3}[-\\s]?)?(\\(\\d{3}\\)|\\d{3})[-\\s]?\\d{3}[-\\s]?\\d{2}[-\\s]?\\d{2}$";
+				if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, phonePattern)) {
+					throw gcnew Exception(
+						"Телефон должен быть в одном из форматов:\n"
+						"+X-XXX-XXX-XX-XX, +X (XXX) XXX-XX-XX, XXX-XXX-XX-XX, (XXX) XXX-XX-XX, XXXXXXXXXXX"
+					);
+				}
+			}
+			else if (columnName == "CustomersAddress") {
+				String^ addressPattern =
+					"^[A-Za-zА-Яа-я0-9\\s\\-\\.]+,\\s*\\d+[A-Za-zА-Яа-я]?,\\s*[A-Za-zА-Яа-я\\s\\-\\.]+,[A-Za-z0-9\\s\\-]{3,10},\\s*[A-Za-zА-Яа-я\\s\\-\\.]+$";
+				if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, addressPattern)) {
+					throw gcnew Exception(
+						"Адрес должен быть в формате:\n"
+						"Улица, Номер дома, Город, Индекс, Страна\n"
+						"Пример: ул. Ленина, 12А, Москва, 123456, Россия"
+					);
+				}
+			}
+		}
+		else if (dataGridView == this->dataProducts) {
+			if (columnName == "ProductsWeight") {
+				Decimal weight = Convert::ToDecimal(newValue);
+				if (weight <= 0) {
+					throw gcnew Exception("Вес изделия должен быть положительным числом");
+				}
+			}
+			else if (columnName == "ProductsDimensions") {
+				String^ dimensionsPattern = "^\\d+(\\s*[x,]\\s*|\\s+)\\d+(\\s*[x,]\\s*|\\s+)\\d+$";
+				if (!System::Text::RegularExpressions::Regex::IsMatch(newValue, dimensionsPattern)) {
+					throw gcnew Exception(
+						"Габариты должны быть в формате: 'Длина x Ширина x Высота' или 'Длина Ширина Высота'\n"
+						"Пример: 120x60x80 или 120 60 80"
+					);
+				}
+
+				array<Char>^ separators = { 'x', ',', ' ' };
+				array<String^>^ dimensions = newValue->Split(separators, StringSplitOptions::RemoveEmptyEntries);
+
+				if (dimensions->Length != 3) {
+					throw gcnew Exception("Габариты должны состоять из трех чисел.");
+				}
+
+				Decimal length = Convert::ToDecimal(dimensions[0]);
+				Decimal width = Convert::ToDecimal(dimensions[1]);
+				Decimal height = Convert::ToDecimal(dimensions[2]);
+
+				if (length <= 0 || width <= 0 || height <= 0) {
+					throw gcnew Exception("Габариты должны быть положительными числами.");
+				}
+			}
+		}
+		else if (columnName == "WarehouseProductID") {
+			if (e->RowIndex < 0 || e->RowIndex >= dataGridView->RowCount) {
+				e->Cancel = true;
 				return;
 			}
 
-			int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
-			if (selectedRowIndex < 0 || selectedRowIndex >= dataSource->Count) {
-				MessageBox::Show("Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			Warehouse^ warehouse = (Warehouse^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
+
+			Int32 newProductId = Convert::ToInt32(newValue);
+			Product^ newProduct = nullptr;
+
+			for each (Product ^ product in db::data->getProductSource()) {
+				if (product->ID == newProductId) {
+					newProduct = product;
+					break;
+				}
+			}
+
+			if (newProduct != nullptr) {
+				warehouse->ProductObject = newProduct;
+			}
+			else {
+				MessageBox::Show(
+					"Товар с указанным ID не найден в списке изделий.",
+					"Ошибка",
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Error
+				);
+				e->Cancel = true;
 				return;
 			}
 
-			Object^ itemToDelete = dataSource[selectedRowIndex];
-			String^ message = "Элемент удален.";
-			String^ title = "Удаление";
+			dataOrders->DataSource = nullptr;
+			dataOrders->DataSource = db::data->getOrderSource();
+			dataOrders->Refresh();
 
-			if (itemToDelete->GetType() == Customer::typeid) {
-				Customer^ customerToDelete = (Customer^)itemToDelete;
-				db::data->DeleteOrdersByCustomerID(customerToDelete->ID);
-				message = "Заказчик '" + customerToDelete->Name + "' удален, а также все его заказы.";
-				title = "Удаление заказчика";
-			}
-			else if (itemToDelete->GetType() == Product::typeid) {
-				Product^ productToDelete = (Product^)itemToDelete;
-				db::data->DeleteOrdersByProductID(productToDelete->ID);
-				db::data->DeleteWarehouseByProductID(productToDelete->ID);
-				message = "Товар '" + productToDelete->Name + "' удален из изделий, заказов и склада.";
-				title = "Удаление товара";
-			}
-			else if (itemToDelete->GetType() == Warehouse::typeid) {
-				Warehouse^ warehouseToDelete = (Warehouse^)itemToDelete;
-				if (warehouseToDelete->ProductObject != nullptr) {
-					db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
-					message = "Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.";
-					title = "Удаление со склада";
-				}
-				else {
-					MessageBox::Show("Товар не найден или был удален ранее.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-					return;
-				}
-			}
-			else if (itemToDelete->GetType() == Order::typeid) {
-				Order^ orderToDelete = (Order^)itemToDelete;
-				message = "Заказ №" + orderToDelete->ID + " удален.";
-				title = "Удаление заказа";
+			dataGridView->Refresh();
+		}
+		else if (columnName == "WarehouseProductQuantity") {
+			if (e->RowIndex < 0 || e->RowIndex >= dataGridView->RowCount) {
+				e->Cancel = true;
+				return;
 			}
 
-			dataSource->RemoveAt(selectedRowIndex);
-			dataGridView->DataSource = nullptr;
-			dataGridView->DataSource = dataSource;
+			Warehouse^ warehouse = (Warehouse^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
 
-			if (itemToDelete->GetType() == Customer::typeid || itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
-				dataOrders->DataSource = nullptr;
-				dataOrders->DataSource = db::data->getOrderSource();
+			Int32 newQuantity = Convert::ToInt32(newValue);
 
-				if (itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
-					dataWarehouse->DataSource = nullptr;
-					dataWarehouse->DataSource = db::data->getWarehouseSource();
-
-					if (itemToDelete->GetType() == Product::typeid) {
-						dataProducts->DataSource = nullptr;
-						dataProducts->DataSource = db::data->getProductSource();
-					}
-				}
+			if (newQuantity < 0) {
+				MessageBox::Show(
+					"Количество изделий не может быть отрицательным.",
+					"Ошибка",
+					MessageBoxButtons::OK,
+					MessageBoxIcon::Error
+				);
+				e->Cancel = true;
+				return;
 			}
 
-			MessageBox::Show(message, title, MessageBoxButtons::OK, MessageBoxIcon::Information);
+			warehouse->Quantity = newQuantity;
+
+			if (newQuantity > 0) {
+				warehouse->Status = "В наличии";
+			}
+			else {
+				warehouse->Status = "Нет в наличии";
+			}
+
+			if (warehouse->ProductObject != nullptr) {
+				warehouse->Price = newQuantity * warehouse->ProductObject->Price;
+			}
+			else {
+				warehouse->Price = 0;
+			}
+
+			dataGridView->Refresh();
+
 			db::data->Save();
 		}
-		catch (ArgumentOutOfRangeException^ ex) {
-			MessageBox::Show("Ошибка: Некорректный индекс строки. " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		else if (dataGridView == this->dataOrders) {
+			if (columnName == "OrdersCount") {
+				Int32 count = Convert::ToInt32(newValue);
+				if (count <= 0) {
+					throw gcnew Exception("Количество заказов должно быть положительным числом");
+				}
+
+				Order^ order = (Order^)dataGridView->Rows[e->RowIndex]->DataBoundItem;
+
+				if (order->WarehouseProductObject == nullptr) {
+					throw gcnew Exception("Товар в заказе не выбран.");
+				}
+
+				Int32 warehouseQuantity = db::data->GetProductQuantity(order->WarehouseProductObject->ID);
+
+				if (count > warehouseQuantity + order->Quantity) {
+					throw gcnew Exception("Количество товара в заказе превышает доступное количество на складе");
+				}
+
+				Int32 oldQuantity = order->Quantity;
+
+				db::data->UpdateWarehouseQuantity(order->WarehouseProductObject->ID, warehouseQuantity + oldQuantity - count);
+
+				order->Quantity = count;
+
+				if (order->Quantity >= 10) {
+					MessageBox::Show(
+						"Применена скидка 10% (оптовая поставка).",
+						"Скидка",
+						MessageBoxButtons::OK,
+						MessageBoxIcon::Information
+					);
+				}
+				order->CalculatePrice();
+				dataGridView->Refresh();
+			}
 		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Ошибка при удалении строки: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		}
+		db::data->Save();
 	}
+	catch (FormatException^) {
+		MessageBox::Show("Неверный формат данных", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		e->Cancel = true;
+	}
+	catch (Exception^ ex) {
+		MessageBox::Show(ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+		e->Cancel = true;
+	}
+}
+	//Вспомогательный метод для удаления строк из DataGridView
+void DeleteRow(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
+	try {
+		// Проверяем, выбрана ли хотя бы одна ячейка
+		if (dataGridView->SelectedCells->Count == 0) {
+			MessageBox::Show("Не выбрана ни одна ячейка для удаления строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+			return;
+		}
+
+		// Получаем индекс строки из первой выбранной ячейки
+		int selectedRowIndex = dataGridView->SelectedCells[0]->RowIndex;
+		if (selectedRowIndex < 0 || selectedRowIndex >= dataSource->Count) {
+			MessageBox::Show("Некорректный индекс строки.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return;
+		}
+
+		// Получаем объект для удаления
+		Object^ itemToDelete = dataSource[selectedRowIndex];
+		String^ message = "Элемент удален.";
+		String^ title = "Удаление";
+
+		// Обработка удаления в зависимости от типа объекта
+		if (itemToDelete->GetType() == Order::typeid) {
+			// Удаление заказа
+			Order^ orderToDelete = (Order^)itemToDelete;
+
+			// Восстанавливаем количество товара на складе
+			if (orderToDelete->WarehouseProductObject != nullptr) {
+				Int32 productId = orderToDelete->WarehouseProductObject->ID;
+				Int32 currentQuantity = db::data->GetProductQuantity(productId);
+				Int32 newQuantity = currentQuantity + orderToDelete->Quantity;
+				db::data->UpdateWarehouseQuantity(productId, newQuantity);
+			}
+
+			// Удаляем заказ из списка
+			db::data->getOrderSource()->Remove(orderToDelete);
+			message = "Заказ №" + orderToDelete->ID + " удален.";
+			title = "Удаление заказа";
+		}
+		else if (itemToDelete->GetType() == Customer::typeid) {
+			// Удаление клиента и всех его заказов
+			Customer^ customerToDelete = (Customer^)itemToDelete;
+			db::data->DeleteOrdersByCustomerID(customerToDelete->ID);
+			message = "Заказчик '" + customerToDelete->Name + "' удален, а также все его заказы.";
+			title = "Удаление заказчика";
+		}
+		else if (itemToDelete->GetType() == Product::typeid) {
+			// Удаление продукта и всех связанных заказов и записей на складе
+			Product^ productToDelete = (Product^)itemToDelete;
+			db::data->DeleteOrdersByProductID(productToDelete->ID);
+			db::data->DeleteWarehouseByProductID(productToDelete->ID);
+			message = "Товар '" + productToDelete->Name + "' удален из изделий, заказов и склада.";
+			title = "Удаление товара";
+		}
+		else if (itemToDelete->GetType() == Warehouse::typeid) {
+			// Удаление записи на складе и всех связанных заказов
+			Warehouse^ warehouseToDelete = (Warehouse^)itemToDelete;
+			if (warehouseToDelete->ProductObject != nullptr) {
+				db::data->DeleteOrdersByProductID(warehouseToDelete->ProductObject->ID);
+				message = "Товар '" + warehouseToDelete->ProductObject->Name + "' удален со склада и из заказов.";
+				title = "Удаление со склада";
+			}
+			else {
+				MessageBox::Show("Товар не найден или был удален ранее.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return;
+			}
+		}
+
+		// Удаляем строку из источника данных
+		dataSource->RemoveAt(selectedRowIndex);
+
+		// Обновляем DataGridView
+		dataGridView->DataSource = nullptr;
+		dataGridView->DataSource = dataSource;
+
+		// Обновляем другие DataGridView, если это необходимо
+		if (itemToDelete->GetType() == Customer::typeid || itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
+			dataOrders->DataSource = nullptr;
+			dataOrders->DataSource = db::data->getOrderSource();
+
+			if (itemToDelete->GetType() == Product::typeid || itemToDelete->GetType() == Warehouse::typeid) {
+				dataWarehouse->DataSource = nullptr;
+				dataWarehouse->DataSource = db::data->getWarehouseSource();
+
+				if (itemToDelete->GetType() == Product::typeid) {
+					dataProducts->DataSource = nullptr;
+					dataProducts->DataSource = db::data->getProductSource();
+				}
+			}
+		}
+
+		// Показываем сообщение об успешном удалении
+		MessageBox::Show(message, title, MessageBoxButtons::OK, MessageBoxIcon::Information);
+		db::data->Save();
+	}
+	catch (ArgumentOutOfRangeException^ ex) {
+		MessageBox::Show("Ошибка: Некорректный индекс строки. " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+	}
+	catch (Exception^ ex) {
+		MessageBox::Show("Ошибка при удалении строки: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+	}
+}
 
 	private:
-    void UpdateDataSourceAndSave(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
-        dataGridView->DataSource = nullptr;
-        dataGridView->DataSource = dataSource;
-        db::data->Save();
-    }
+		//Метод для обноваления и сохранения данных
+		void UpdateDataSourceAndSave(DataGridView^ dataGridView, System::Collections::IList^ dataSource) {
+			try {
+				dataGridView->DataSource = nullptr;
+				dataGridView->DataSource = dataSource;
+				db::data->Save();
+			}
+			catch (Exception^ ex) {
+				MessageBox::Show("Ошибка при обновлении данных: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
+		//Метод проверки dataSource
+		bool CheckDataAvailability(System::Collections::IList^ dataSource, String^ errorMessage) {
+			if (dataSource == nullptr || dataSource->Count < 1) {
+				MessageBox::Show(errorMessage, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+				return false;
+			}
+			return true;
+		}
 
-    template<typename T>
-    void AddItem(DataGridView^ dataGridView, System::Collections::IList^ dataSource, T^ newItem) {
-        db::data->addItem(newItem);
-        UpdateDataSourceAndSave(dataGridView, dataSource);
-    }
+		//Методы добавления обьектов
+		void AddCustomer(DataGridView^ dataGridView, System::Collections::IList^ dataSource, Customer^ newCustomer) {
+			try {
+				if (newCustomer == nullptr) {
+					MessageBox::Show("Невозможно добавить пустого заказчика.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					return;
+				}
 
-    bool CheckDataAvailability(System::Collections::IList^ dataSource, String^ errorMessage) {
-        if (dataSource->Count < 1) {
-            MessageBox::Show(errorMessage);
-            return false;
-        }
-        return true;
-    }
+				db::data->addCustomer(newCustomer);
+				UpdateDataSourceAndSave(dataGridView, dataSource);
+			}
+			catch (Exception^ ex) {
+				MessageBox::Show("Ошибка при добавлении заказчика: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
+		void AddProduct(DataGridView^ dataGridView, System::Collections::IList^ dataSource, Product^ newProduct) {
+			try {
+				if (newProduct == nullptr) {
+					MessageBox::Show("Невозможно добавить пустой продукт.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					return;
+				}
 
-private: 
-    System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-        Customer^ newCustomer = gcnew Customer("Новый заказчик", "+7-999-999-99-99", "ул. Ленина, 12А, Москва, 123456, Россия", "Физическое лицо");
-        AddItem(dataCustomers, db::data->getCustomerSource(), newCustomer);
-    }
+				db::data->addProduct(newProduct);
+				UpdateDataSourceAndSave(dataGridView, dataSource);
+			}
+			catch (Exception^ ex) {
+				MessageBox::Show("Ошибка при добавлении продукта: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
+		void AddWarehouse(DataGridView^ dataGridView, System::Collections::IList^ dataSource, Warehouse^ newWarehouse) {
+			try {
+				if (newWarehouse == nullptr) {
+					MessageBox::Show("Невозможно добавить пустой склад.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					return;
+				}
 
-    System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
-        DeleteRow(dataCustomers, db::data->getCustomerSource());
-    }
+				db::data->addWarehouse(newWarehouse);
+				UpdateDataSourceAndSave(dataGridView, dataSource);
+			}
+			catch (Exception^ ex) {
+				MessageBox::Show("Ошибка при добавлении склада: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
+		void AddOrder(DataGridView^ dataGridView, System::Collections::IList^ dataSource, Order^ newOrder) {
+			try {
+				if (newOrder == nullptr) {
+					MessageBox::Show("Невозможно добавить пустой заказ.", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+					return;
+				}
 
-    System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-        Product^ newProduct = gcnew Product("Новый продукт", "12 12 12", 23, "Дерево", "Коричневый", 12, 3000, "Гостиная");
-        AddItem(dataProducts, db::data->getProductSource(), newProduct);
-    }
+				db::data->addOrder(newOrder);
+				UpdateDataSourceAndSave(dataGridView, dataSource);
+			}
+			catch (Exception^ ex) {
+				MessageBox::Show("Ошибка при добавлении заказа: " + ex->Message, "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
+		}
 
-    System::Void buttonProductsDel_Click(System::Object^ sender, System::EventArgs^ e) {
-        DeleteRow(dataProducts, db::data->getProductSource());
-    }
+private:
+	//Обработчики событий кнопок
+	System::Void buttonCustomersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		Customer^ newCustomer = gcnew Customer("Новый заказчик", "+7-999-999-99-99", "ул. Ленина, 12а, Москва, 123456, Россия", "Физическое лицо");
+		AddCustomer(dataCustomers, db::data->getCustomerSource(), newCustomer);
+	}
 
-    System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-        if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
-        Warehouse^ newWarehouse = gcnew Warehouse(0, 10, "В наличии");
-        AddItem(dataWarehouse, db::data->getWarehouseSource(), newWarehouse);
-    }
+	System::Void buttonCustomersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataCustomers, db::data->getCustomerSource());
+	}
 
-    System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
-        DeleteRow(dataWarehouse, db::data->getWarehouseSource());
-        UpdateDataSourceAndSave(dataOrders, db::data->getOrderSource());
-    }
+	System::Void buttonProductsAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		Product^ newProduct = gcnew Product("Новый продукт", "12 12 12", 23, "Дерево", "Коричневый", 12, 3000, "Гостиная");
+		AddProduct(dataProducts, db::data->getProductSource(), newProduct);
+	}
 
-    System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
-        if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
-        if (!CheckDataAvailability(db::data->getCustomerSource(), "Заполните список заказчиков")) return;
-        if (!CheckDataAvailability(db::data->getWarehouseSource(), "Нет доступных изделий на складе")) return;
+	System::Void buttonProductsDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataProducts, db::data->getProductSource());
+	}
 
-        Order^ newOrder = gcnew Order(0, 0, 1, DateTime::Now);
-        AddItem(dataOrders, db::data->getOrderSource(), newOrder);
+	System::Void buttonWarehouseAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
+		Warehouse^ newWarehouse = gcnew Warehouse(0, 10, "В наличии");
+		AddWarehouse(dataWarehouse, db::data->getWarehouseSource(), newWarehouse);
+	}
 
-        OrdersProductID->DataSource = nullptr;
-        OrdersProductID->DataSource = db::data->getWarehouseSource();
-        OrdersProductID->ValueMember = "thisWarehouseProduct";
-        OrdersProductID->DisplayMember = "thisWarehouseProductID";
-    }
+	System::Void buttonWarehouseDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataWarehouse, db::data->getWarehouseSource());
+		UpdateDataSourceAndSave(dataOrders, db::data->getOrderSource());
+	}
 
-    System::Void buttonOrdersDel_Click(System::Object^ sender, System::EventArgs^ e) {
-        DeleteRow(dataOrders, db::data->getOrderSource());
-    }
+	System::Void buttonOrdersAdd_Click(System::Object^ sender, System::EventArgs^ e) {
+		if (!CheckDataAvailability(db::data->getProductSource(), "Заполните список изделий")) return;
+		if (!CheckDataAvailability(db::data->getCustomerSource(), "Заполните список заказчиков")) return;
+		if (!CheckDataAvailability(db::data->getWarehouseSource(), "Нет доступных изделий на складе")) return;
 
+		Order^ newOrder = gcnew Order(0, 0, 1, DateTime::Now);
+		AddOrder(dataOrders, db::data->getOrderSource(), newOrder);
+		if (newOrder->WarehouseProductObject != nullptr) {
+			newOrder->UpdateWarehouseQuantity();
+		}
+		db::data->Save();
+	}
+
+	System::Void buttonOrdersDel_Click(System::Object^ sender, System::EventArgs^ e) {
+		DeleteRow(dataOrders, db::data->getOrderSource());
+	}
 };
 }

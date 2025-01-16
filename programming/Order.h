@@ -8,27 +8,30 @@ using namespace System::ComponentModel;
 
 ref class Order {
 private:
-    Int32 id;
-    Int32 customer;
-    Int32 product;
-    Int32 quantity;
-    DateTime date;
-    Decimal price;
-    Decimal discount;
-    static IWarehouse^ data = nullptr;
+    Int32 id;          // Уникальный идентификатор заказа
+    Int32 customer;    // Идентификатор клиента
+    Int32 product;     // Идентификатор продукта
+    Int32 quantity;    // Количество товара в заказе
+    DateTime date;     // Дата заказа
+    Decimal price;     // Цена заказа
+    Decimal discount;  // Скидка на заказ
+    static IWarehouse^ data = nullptr;  // Ссылка на базу данных
 
+    // Генерация случайного ID для заказа
     Int32 GenerateRandomId() {
-        return (gcnew Random())->Next(1000, 10000);
+        return (gcnew Random())->Next(100000, 1000000);
     }
 
 public:
     event PropertyChangedEventHandler^ PropertyChanged;
 
+    // Конструктор для создания нового заказа
     Order(Int32 customer, Int32 product, Int32 quantity, DateTime date)
         : id(GenerateRandomId()), customer(customer), product(product), quantity(quantity), date(date), discount(0) {
         CalculatePrice();
     }
 
+    // Конструктор для загрузки заказа из файла
     Order(StreamReader^ sr) {
         id = Convert::ToInt32(sr->ReadLine());
         customer = Convert::ToInt32(sr->ReadLine());
@@ -39,6 +42,7 @@ public:
         discount = Convert::ToDecimal(sr->ReadLine());
     }
 
+    // Свойства для доступа к данным заказа
     property Int32 ID { Int32 get() { return id; } }
     property Customer^ CustomerObject { Customer^ get() { return data->getCustomer(customer); } void set(Customer^ value) { customer = data->getCustomerObject(value); } }
     property Product^ WarehouseProductObject { Product^ get() { return data->getWarehouseProduct(product); } void set(Product^ value) { product = data->getWarehouseProductObject(value); CalculatePrice(); } }
@@ -47,8 +51,10 @@ public:
     property Decimal Price { Decimal get() { return price; } }
     property Decimal Discount { Decimal get() { return discount; } }
 
+    // Метод для установки ссылки на базу данных
     void SetDB(IWarehouse^ _data) { data = _data; }
 
+    // Метод для сохранения заказа в файл
     void Save(StreamWriter^ sw) {
         sw->WriteLine(id);
         sw->WriteLine(customer);
@@ -59,6 +65,7 @@ public:
         sw->WriteLine(discount);
     }
 
+    // Метод для расчета цены заказа
     void CalculatePrice() {
         if (data != nullptr && WarehouseProductObject != nullptr) {
             Decimal pricePerUnit = WarehouseProductObject->Price;
@@ -78,6 +85,20 @@ public:
         OnPropertyChanged("Price");
     }
 
+    // Метод для обновления количества товара на складе
+    void UpdateWarehouseQuantity() {
+        if (data != nullptr && WarehouseProductObject != nullptr) {
+            Product^ product = WarehouseProductObject;
+            Int32 productId = product->ID;
+
+            Int32 currentQuantity = data->GetProductQuantity(productId);
+            Int32 newQuantity = currentQuantity - quantity;
+
+            data->UpdateWarehouseQuantity(productId, newQuantity);
+        }
+    }
+
+    // Метод для уведомления об изменении свойства
     void OnPropertyChanged(String^ propertyName) {
         PropertyChanged(this, gcnew PropertyChangedEventArgs(propertyName));
     }
