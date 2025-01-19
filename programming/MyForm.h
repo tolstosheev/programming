@@ -317,7 +317,7 @@ namespace programming {
 			// WarehouseProductID
 			// 
 			this->WarehouseProductID->DataPropertyName = L"ProductObject";
-			this->WarehouseProductID->HeaderText = L"ID изделия";
+			this->WarehouseProductID->HeaderText = L"Артикул изделия";
 			this->WarehouseProductID->Name = L"WarehouseProductID";
 			// 
 			// WarehouseProductQuantity
@@ -337,6 +337,7 @@ namespace programming {
 			this->WarehousePrice->DataPropertyName = L"Price";
 			this->WarehousePrice->HeaderText = L"Общая стоимость";
 			this->WarehousePrice->Name = L"WarehousePrice";
+			this->WarehousePrice->ReadOnly = true;
 			// 
 			// tabOrder
 			// 
@@ -511,7 +512,7 @@ namespace programming {
 			// OrdersProductID
 			// 
 			this->OrdersProductID->DataPropertyName = L"WarehouseProductObject";
-			this->OrdersProductID->HeaderText = L"Артикула изделия";
+			this->OrdersProductID->HeaderText = L"Артикул изделия";
 			this->OrdersProductID->Name = L"OrdersProductID";
 			this->OrdersProductID->Resizable = System::Windows::Forms::DataGridViewTriState::True;
 			this->OrdersProductID->SortMode = System::Windows::Forms::DataGridViewColumnSortMode::Automatic;
@@ -527,6 +528,7 @@ namespace programming {
 			this->OrdersDate->DataPropertyName = L"Date";
 			this->OrdersDate->HeaderText = L"Дата";
 			this->OrdersDate->Name = L"OrdersDate";
+			this->OrdersDate->ReadOnly = true;
 			// 
 			// OrdersPrice
 			// 

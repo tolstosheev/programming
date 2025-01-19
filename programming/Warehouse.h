@@ -9,7 +9,7 @@ using namespace System::ComponentModel;
 ref class Warehouse {
 private:
     Int32 id;          // Уникальный идентификатор склада
-    Int32 product;     // Идентификатор продукта
+    Int32 product;     // Номер продукта
     Int32 quantity;    // Количество товара на складе
     String^ status;    // Статус товара (в наличии/нет в наличии)
     Decimal price;     // Общая стоимость товара на складе
@@ -21,15 +21,7 @@ private:
     }
 
     // Метод для расчета стоимости товара на складе
-    void CalculatePrice() {
-        if (data != nullptr && ProductObject != nullptr) {
-            price = quantity * ProductObject->Price;
-        }
-        else {
-            price = 0;
-        }
-        OnPropertyChanged("Price");
-    }
+   
 
 public:
     event PropertyChangedEventHandler^ PropertyChanged;
@@ -75,6 +67,16 @@ public:
     void UpdateStatus() {
         status = quantity > 0 ? "В наличии" : "Нет в наличии";
         OnPropertyChanged("Status");
+    }
+
+    void CalculatePrice() {
+        if (data != nullptr && ProductObject != nullptr) {
+            price = quantity * ProductObject->Price;
+        }
+        else {
+            price = 0;
+        }
+        OnPropertyChanged("Price");
     }
 
     // Метод для уведомления об изменении свойства
