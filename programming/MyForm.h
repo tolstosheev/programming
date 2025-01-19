@@ -331,6 +331,7 @@ namespace programming {
 			this->WarehouseProductStatus->DataPropertyName = L"Status";
 			this->WarehouseProductStatus->HeaderText = L"Статус";
 			this->WarehouseProductStatus->Name = L"WarehouseProductStatus";
+			this->WarehouseProductStatus->ReadOnly = true;
 			// 
 			// WarehousePrice
 			// 
