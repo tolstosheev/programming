@@ -20,9 +20,6 @@ private:
         return (gcnew Random())->Next(100000, 1000000);
     }
 
-    // Метод для расчета стоимости товара на складе
-   
-
 public:
     event PropertyChangedEventHandler^ PropertyChanged;
 
@@ -69,6 +66,7 @@ public:
         OnPropertyChanged("Status");
     }
 
+    // Метод для расчета стоимости товара на складе
     void CalculatePrice() {
         if (data != nullptr && ProductObject != nullptr) {
             price = quantity * ProductObject->Price;

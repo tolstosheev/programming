@@ -961,6 +961,9 @@ private: System::Void DataGridView_CellValidating(System::Object^ sender, System
 			MessageBox::Show("Çàêàç ¹" + orderToDelete->ID + " óäàëåí.", "Óäàëåíèå çàêàçà", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			UpdateDataSourceAndSave(dataOrders, db::data->getOrderSource());
 		}
-};
+		System::Void MyForm_FormClosing(System::Object^, FormClosingEventArgs e) {
+			db::data->Save();
+		}
+	};
 };
 
